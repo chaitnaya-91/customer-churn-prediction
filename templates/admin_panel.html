@@ -1,0 +1,568 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel - Churn Prediction{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-6">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-extrabold text-gray-900">⚙️ Admin Panel</h1>
+            <p class="text-sm text-gray-500 mt-1">Manage users, memberships, datasets and prediction activity</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
+                🔐 Admin Access
+            </span>
+        </div>
+    </div>
+
+    <!-- Quick Navigation Tabs -->
+    <nav class="bg-white rounded-2xl shadow-sm border border-gray-100 p-2">
+        <div class="flex flex-wrap gap-2">
+            <a href="#activity" class="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 transition shadow-sm">
+                📊 Prediction Activity
+            </a>
+            <a href="#memberships-section" class="flex items-center gap-2 px-4 py-2.5 bg-purple-50 text-purple-700 rounded-xl text-sm font-semibold hover:bg-purple-100 transition border border-purple-200">
+                👑 Premium Memberships
+            </a>
+            <a href="#submissions" class="flex items-center gap-2 px-4 py-2.5 bg-amber-50 text-amber-700 rounded-xl text-sm font-semibold hover:bg-amber-100 transition border border-amber-200">
+                📁 Dataset Submissions
+            </a>
+            <a href="#datasets" class="flex items-center gap-2 px-4 py-2.5 bg-emerald-50 text-emerald-700 rounded-xl text-sm font-semibold hover:bg-emerald-100 transition border border-emerald-200">
+                🗄️ Uploaded Datasets
+            </a>
+            <a href="#users" class="flex items-center gap-2 px-4 py-2.5 bg-indigo-50 text-indigo-700 rounded-xl text-sm font-semibold hover:bg-indigo-100 transition border border-indigo-200">
+                👥 Users
+            </a>
+        </div>
+    </nav>
+
+    <!-- ==================== PREDICTION ACTIVITY ==================== -->
+    <div id="activity" class="rounded-2xl overflow-hidden shadow-md border border-gray-100">
+        <!-- Section header -->
+        <div class="px-6 py-4 flex items-center gap-3" style="background: linear-gradient(135deg, #1e40af, #3b82f6);">
+            <span class="text-2xl">📊</span>
+            <div>
+                <h2 class="text-lg font-bold text-white">Prediction Activity</h2>
+                <p class="text-blue-100 text-xs">Live overview of all churn prediction events</p>
+            </div>
+            <div class="ml-auto bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full">
+                <span class="text-white font-bold text-lg">{{ total_preds }}</span>
+                <span class="text-blue-100 text-xs ml-1">total</span>
+            </div>
+        </div>
+
+        <div class="bg-white p-6">
+            {% if recent_preds %}
+            <div class="space-y-3">
+                {% for p in recent_preds %}
+                <div class="prediction-row flex items-center gap-4 p-4 rounded-xl border border-gray-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all duration-200 group" style="display: none;">
+                    <!-- Risk indicator dot -->
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm
+                            {% if p.churn_risk == 'High' %}bg-red-100 text-red-700
+                            {% elif p.churn_risk == 'Medium' %}bg-amber-100 text-amber-700
+                            {% else %}bg-green-100 text-green-700{% endif %}">
+                            {% if p.churn_risk == 'High' %}🔴{% elif p.churn_risk == 'Medium' %}🟡{% else %}🟢{% endif %}
+                        </div>
+                    </div>
+                    <!-- Info -->
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="font-semibold text-gray-800 text-sm">
+                                {{ p.industry|title if p.industry else 'General' }}
+                            </span>
+                            <span class="text-gray-400 text-xs">•</span>
+                            <span class="text-gray-600 text-xs">Customer: {{ p.customer_id or 'Manual Entry' }}</span>
+                        </div>
+                        <div class="text-xs text-gray-400 mt-0.5">{{ p.created_at.strftime('%d %b %Y, %I:%M %p') if p.created_at else '—' }}</div>
+                    </div>
+                    <!-- Risk score badge -->
+                    <div class="flex items-center gap-3">
+                        <!-- Progress bar -->
+                        <div class="hidden sm:block w-24">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-gray-500">Risk</span>
+                                <span class="font-bold
+                                    {% if p.churn_risk == 'High' %}text-red-600
+                                    {% elif p.churn_risk == 'Medium' %}text-amber-600
+                                    {% else %}text-green-600{% endif %}">{{ p.risk_score }}%</span>
+                            </div>
+                            <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full transition-all duration-500
+                                    {% if p.churn_risk == 'High' %}bg-red-500
+                                    {% elif p.churn_risk == 'Medium' %}bg-amber-400
+                                    {% else %}bg-green-500{% endif %}"
+                                    style="width: {{ p.risk_score }}%"></div>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border
+                            {% if p.churn_risk == 'High' %}bg-red-50 text-red-700 border-red-200
+                            {% elif p.churn_risk == 'Medium' %}bg-amber-50 text-amber-700 border-amber-200
+                            {% else %}bg-green-50 text-green-700 border-green-200{% endif %}">
+                            {{ p.churn_risk }} Risk
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <!-- Show More predictions button -->
+            <div id="predictionsShowMoreBtnContainer" class="mt-6 flex justify-center hidden">
+                <button id="btnPredictionsShowMore" class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105">
+                    Show More Predictions ⬇️
+                </button>
+            </div>
+            {% else %}
+            <div class="text-center py-12">
+                <div class="text-5xl mb-3">📭</div>
+                <p class="text-gray-500 font-medium">No predictions yet</p>
+                <p class="text-gray-400 text-sm mt-1">Predictions will appear here once users start making them</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- ==================== PREMIUM MEMBERSHIP REQUESTS ==================== -->
+    <div id="memberships-section" class="rounded-2xl overflow-hidden shadow-md border border-gray-100">
+        <!-- Section header -->
+        <div class="px-6 py-4 flex items-center gap-3" style="background: linear-gradient(135deg, #6d28d9, #a855f7);">
+            <span class="text-2xl">👑</span>
+            <div>
+                <h2 class="text-lg font-bold text-white">Premium Membership Requests</h2>
+                <p class="text-purple-100 text-xs">Review and approve membership applications</p>
+            </div>
+            <div class="ml-auto bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full">
+                <span class="text-white font-bold text-lg">{{ memberships|length if memberships else 0 }}</span>
+                <span class="text-purple-100 text-xs ml-1">requests</span>
+            </div>
+        </div>
+
+        <div class="bg-white p-6">
+            {% if memberships and memberships|length > 0 %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr class="border-b border-gray-100">
+                            <th class="pb-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider pl-2">User</th>
+                            <th class="pb-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Plan</th>
+                            <th class="pb-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Payment</th>
+                            <th class="pb-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Date</th>
+                            <th class="pb-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="pb-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        {% for m in memberships %}
+                        <tr class="hover:bg-purple-50/30 transition-colors duration-150 group">
+                            <!-- User info -->
+                            <td class="py-4 pl-2">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm
+                                        {% if m.plan == 'gold' %}bg-amber-100 text-amber-700{% else %}bg-purple-100 text-purple-700{% endif %}">
+                                        {{ (m.name[0] if m.name else '?')|upper }}
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-gray-800 text-sm">{{ m.name or '—' }}</div>
+                                        <div class="text-xs text-gray-400">{{ m.email or '—' }} {% if m.city %}· {{ m.city }}{% endif %}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <!-- Plan -->
+                            <td class="py-4">
+                                {% if m.plan == 'gold' %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                                    ⭐ Gold <span class="text-amber-600">₹500</span>
+                                </span>
+                                {% else %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800 border border-purple-200">
+                                    👑 Premium <span class="text-purple-600">₹1000</span>
+                                </span>
+                                {% endif %}
+                            </td>
+                            <!-- Payment screenshot -->
+                            <td class="py-4">
+                                {% if m.payment_screenshot %}
+                                <div class="flex items-center gap-2">
+                                    <a href="{{ url_for('static', filename='payments/' + m.payment_screenshot) }}" target="_blank"
+                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 transition">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                        View
+                                    </a>
+                                    <a href="{{ url_for('admin_download_membership_screenshot', membership_id=m._id) }}"
+                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 transition">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                        Download
+                                    </a>
+                                </div>
+                                {% else %}
+                                <span class="text-xs text-gray-400 italic">No screenshot</span>
+                                {% endif %}
+                            </td>
+                            <!-- Date -->
+                            <td class="py-4 text-xs text-gray-500">
+                                {{ m.created_at.strftime('%d %b %Y') if m.created_at else '—' }}<br>
+                                <span class="text-gray-400">{{ m.created_at.strftime('%I:%M %p') if m.created_at else '' }}</span>
+                            </td>
+                            <!-- Approval status -->
+                            <td class="py-4">
+                                {% if m.get('approved', False) %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 border border-green-200">
+                                    ✅ Approved
+                                </span>
+                                {% else %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-700 border border-orange-200">
+                                    ⏳ Pending
+                                </span>
+                                {% endif %}
+                            </td>
+                            <!-- Approve and Reject Actions -->
+                            <td class="py-4 text-center">
+                                <div class="flex items-center justify-center gap-3">
+                                    <form method="POST" action="{{ url_for('admin_approve_membership', membership_id=m._id) }}" class="inline">
+                                        <label class="inline-flex items-center cursor-pointer group/cb" title="{{ 'Revoke approval' if m.get('approved') else 'Approve membership' }}">
+                                            <div class="relative">
+                                                <input type="checkbox" class="sr-only peer" onchange="this.form.submit()"
+                                                       {% if m.get('approved', False) %}checked{% endif %}>
+                                                <div class="w-11 h-6 bg-gray-200 peer-checked:bg-purple-600 rounded-full transition-colors duration-300 peer-focus:ring-2 peer-focus:ring-purple-300"></div>
+                                                <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-300 peer-checked:translate-x-5"></div>
+                                            </div>
+                                        </label>
+                                    </form>
+                                    <form method="POST" action="{{ url_for('admin_reject_membership', membership_id=m._id) }}" class="inline" onsubmit="return confirm('Are you sure you want to reject this request?');">
+                                        <button type="submit" class="inline-flex items-center justify-center px-2.5 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 rounded-lg text-xs font-bold border border-red-200 transition" title="Reject Request">
+                                            ❌ Reject
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-12">
+                <div class="text-5xl mb-3">👑</div>
+                <p class="text-gray-500 font-medium">No membership requests yet</p>
+                <p class="text-gray-400 text-sm mt-1">Applications will appear here once users submit them</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- ==================== DATASET SUBMISSION REQUESTS ==================== -->
+    <div id="submissions" class="rounded-2xl overflow-hidden shadow-md border border-gray-100">
+        <div class="px-6 py-4 flex items-center gap-3" style="background: linear-gradient(135deg, #92400e, #f59e0b);">
+            <span class="text-2xl">📁</span>
+            <div>
+                <h2 class="text-lg font-bold text-white">Dataset Submission Requests</h2>
+                <p class="text-amber-100 text-xs">User-submitted business dataset requests for analysis</p>
+            </div>
+            <div class="ml-auto bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full">
+                <span class="text-white font-bold text-lg">{{ submissions|length if submissions else 0 }}</span>
+                <span class="text-amber-100 text-xs ml-1">submissions</span>
+            </div>
+        </div>
+
+        <div class="bg-white p-6">
+            {% if submissions and submissions|length > 0 %}
+            <div class="space-y-4">
+                {% for s in submissions %}
+                <div class="p-5 border border-gray-100 rounded-2xl hover:border-amber-200 hover:shadow-md transition-all duration-200">
+                    <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                        <div class="flex items-start gap-4 flex-1">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+                                {{ s.full_name[0]|upper if s.full_name else '?' }}
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-bold text-gray-900">{{ s.full_name }}</div>
+                                <div class="text-sm text-gray-500 mt-0.5">{{ s.email }} · {{ s.phone }} · {{ s.city }}</div>
+                                <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                                    <div class="bg-gray-50 rounded-lg px-3 py-2">
+                                        <span class="text-xs font-bold text-gray-500 uppercase">Outcome</span>
+                                        <p class="mt-0.5 text-gray-700 font-medium">{{ s.outcome or '—' }}</p>
+                                    </div>
+                                    <div class="bg-gray-50 rounded-lg px-3 py-2">
+                                        <span class="text-xs font-bold text-gray-500 uppercase">Expected Insights</span>
+                                        <p class="mt-0.5 text-gray-700">{{ s.expected or '—' }}</p>
+                                    </div>
+                                    {% if s.questions %}
+                                    <div class="bg-gray-50 rounded-lg px-3 py-2 sm:col-span-2">
+                                        <span class="text-xs font-bold text-gray-500 uppercase">Questions / Requirements</span>
+                                        <p class="mt-0.5 text-gray-700">{{ s.questions }}</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="text-xs text-gray-400 mt-2">Submitted: {{ s.created_at.strftime('%d %b %Y, %I:%M %p') if s.created_at else '—' }}</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            {% if s.filename %}
+                            <a href="{{ url_for('admin_download_submission', submission_id=s._id) }}"
+                               class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                Download CSV
+                            </a>
+                            {% else %}
+                            <span class="px-4 py-2 text-sm text-gray-400 bg-gray-50 rounded-xl border border-gray-200">No file</span>
+                            {% endif %}
+                            <form method="POST" action="{{ url_for('admin_delete_submission', submission_id=s._id) }}" onsubmit="return confirm('Delete this submission?');">
+                                <button type="submit" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-12">
+                <div class="text-5xl mb-3">📭</div>
+                <p class="text-gray-500 font-medium">No submission requests yet</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- ==================== UPLOADED DATASETS ==================== -->
+    <div id="datasets" class="rounded-2xl overflow-hidden shadow-md border border-gray-100">
+        <div class="px-6 py-4 flex items-center gap-3" style="background: linear-gradient(135deg, #065f46, #10b981);">
+            <span class="text-2xl">🗄️</span>
+            <div>
+                <h2 class="text-lg font-bold text-white">Uploaded Datasets</h2>
+                <p class="text-emerald-100 text-xs">Training datasets uploaded by users per industry</p>
+            </div>
+        </div>
+        <div class="bg-white p-6 space-y-6">
+            {% for ind, items in datasets.items() %}
+            <div>
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                        {{ ind|title }}
+                    </span>
+                    <span class="text-xs text-gray-400">{{ items|length }} dataset(s)</span>
+                </div>
+                {% if items and items|length > 0 %}
+                <div class="overflow-x-auto rounded-xl border border-gray-100">
+                    <table class="min-w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase">User ID</th>
+                                <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase">Filename</th>
+                                <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase">Updated</th>
+                                <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-50">
+                            {% for s in items %}
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-5 py-3 text-xs font-mono text-gray-600">{{ s.user_id }}</td>
+                                <td class="px-5 py-3 text-sm font-semibold text-emerald-700">{{ s.filename or '—' }}</td>
+                                <td class="px-5 py-3 text-xs text-gray-500">{{ s.updated_at.strftime('%d %b %Y') if s.updated_at else '—' }}</td>
+                                <td class="px-5 py-3">
+                                    <div class="flex items-center gap-2">
+                                        <a href="{{ url_for('admin_download_dataset') }}?industry={{ ind }}&state_id={{ s._id }}"
+                                           class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700 transition">
+                                            ⬇️ Download
+                                        </a>
+                                        <form method="POST" action="{{ url_for('admin_delete_dataset') }}" onsubmit="return confirm('Delete this dataset entry?');">
+                                            <input type="hidden" name="industry" value="{{ ind }}" />
+                                            <input type="hidden" name="state_id" value="{{ s._id }}" />
+                                            <button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition">
+                                                🗑️ Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-sm text-gray-400 italic pl-2">No uploaded datasets for {{ ind }}.</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ==================== USERS ==================== -->
+    <div id="users" class="rounded-2xl overflow-hidden shadow-md border border-gray-100">
+        <div class="px-6 py-4 flex items-center gap-3" style="background: linear-gradient(135deg, #3730a3, #6366f1);">
+            <span class="text-2xl">👥</span>
+            <div>
+                <h2 class="text-lg font-bold text-white">Users</h2>
+                <p class="text-indigo-100 text-xs">Manage user accounts and membership plans</p>
+            </div>
+            <div class="ml-auto bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full">
+                <span class="text-white font-bold text-lg">{{ users|length if users else 0 }}</span>
+                <span class="text-indigo-100 text-xs ml-1">users</span>
+            </div>
+        </div>
+
+        <div class="bg-white p-6">
+            {% if users and users|length > 0 %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr class="border-b border-gray-100">
+                            <th class="pb-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">User</th>
+                            <th class="pb-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Email</th>
+                            <th class="pb-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Plan / Role</th>
+                            <th class="pb-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Joined</th>
+                            <th class="pb-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        {% for u in users %}
+                        <tr class="user-row hover:bg-indigo-50/30 transition-colors duration-150" style="display: none;">
+                            <td class="py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                                        {{ (u.first_name[0] if u.first_name else '?')|upper }}
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-gray-900 text-sm">{{ u.first_name }} {{ u.last_name }}</div>
+                                        <div class="text-xs text-gray-400 font-mono">{{ u._id }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-4 text-sm text-indigo-600 font-medium">{{ u.email }}</td>
+                            <td class="py-4">
+                                {% set role = u.role or 'user' %}
+                                {% if role == 'admin' %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-200">🔐 Admin</span>
+                                {% elif role == 'gold' %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">⭐ Gold</span>
+                                {% elif role == 'premium' %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800 border border-purple-200">👑 Premium</span>
+                                {% else %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-700 border border-gray-200">👤 User</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-4 text-xs text-gray-500">{{ u.created_at.strftime('%d %b %Y') if u.created_at else '—' }}</td>
+                            <td class="py-4">
+                                <div class="flex items-center gap-2">
+                                    {% if u.role != 'admin' %}
+                                    <!-- Toggle Plan: User → Gold → Premium → User -->
+                                    <form method="POST" action="{{ url_for('admin_toggle_role', user_id=u._id) }}">
+                                        <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition
+                                            {% if u.role == 'user' or not u.role %}bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100
+                                            {% elif u.role == 'gold' %}bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100
+                                            {% else %}bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100{% endif %}"
+                                            title="Click to cycle: User → Gold → Premium → User">
+                                            {% if u.role == 'user' or not u.role %}
+                                            ⭐ Set Gold
+                                            {% elif u.role == 'gold' %}
+                                            👑 Set Premium
+                                            {% else %}
+                                            👤 Set User
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                    {% else %}
+                                    <span class="text-xs text-gray-400 italic px-2">Admin account</span>
+                                    {% endif %}
+                                    <!-- Delete user -->
+                                    <form method="POST" action="{{ url_for('admin_delete_user', user_id=u._id) }}" onsubmit="return confirm('Delete this user?');">
+                                        <button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition">
+                                            🗑️ Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- Show More users button -->
+            <div id="usersShowMoreBtnContainer" class="mt-6 flex justify-center hidden">
+                <button id="btnUsersShowMore" class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105">
+                    Show More Users ⬇️
+                </button>
+            </div>
+            {% else %}
+            <div class="text-center py-12">
+                <div class="text-5xl mb-3">👤</div>
+                <p class="text-gray-500 font-medium">No users found</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Prediction Activity Show More
+    const predictionRows = document.querySelectorAll('.prediction-row');
+    const predictionShowMoreBtn = document.getElementById('btnPredictionsShowMore');
+    const predictionShowMoreContainer = document.getElementById('predictionsShowMoreBtnContainer');
+    
+    let visiblePredictions = 10;
+    
+    function updatePredictionsVisibility() {
+        predictionRows.forEach((row, index) => {
+            if (index < visiblePredictions) {
+                row.style.display = 'flex';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        
+        if (predictionRows.length > visiblePredictions) {
+            predictionShowMoreContainer.classList.remove('hidden');
+        } else {
+            predictionShowMoreContainer.classList.add('hidden');
+        }
+    }
+    
+    if (predictionRows.length > 0) {
+        updatePredictionsVisibility();
+        predictionShowMoreBtn.addEventListener('click', () => {
+            visiblePredictions += 10;
+            updatePredictionsVisibility();
+        });
+    }
+    
+    // Users Show More
+    const userRows = document.querySelectorAll('.user-row');
+    const userShowMoreBtn = document.getElementById('btnUsersShowMore');
+    const userShowMoreContainer = document.getElementById('usersShowMoreBtnContainer');
+    
+    let visibleUsers = 10;
+    
+    function updateUsersVisibility() {
+        userRows.forEach((row, index) => {
+            if (index < visibleUsers) {
+                row.style.display = 'table-row';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        
+        if (userRows.length > visibleUsers) {
+            userShowMoreContainer.classList.remove('hidden');
+        } else {
+            userShowMoreContainer.classList.add('hidden');
+        }
+    }
+    
+    if (userRows.length > 0) {
+        updateUsersVisibility();
+        userShowMoreBtn.addEventListener('click', () => {
+            visibleUsers += 10;
+            updateUsersVisibility();
+        });
+    }
+});
+</script>
+{% endblock %}

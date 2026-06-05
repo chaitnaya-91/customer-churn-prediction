@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Telecom Dataset Analysis - Churn Prediction{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-8">
+        <a href="{{ url_for('telecom_upload') }}" class="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium mb-4 transition-colors duration-200">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Back to Upload Dataset
+        </a>
+        <div class="flex items-center gap-4">
+            <div class="bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-xl p-3">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Telecom Dataset Visualizations</h1>
+                <p class="text-gray-500 mt-1">Exploratory Data Analysis (EDA) of the uploaded dataset</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visualizations Section -->
+    <div class="bg-white rounded-2xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">📈 Dataset Analytics</h2>
+        
+        <!-- Churn and Retention KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Churn Rate Card -->
+            <div class="bg-gradient-to-br from-red-500 to-rose-600 text-white rounded-2xl p-6 shadow-md border border-red-200">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-sm font-medium uppercase tracking-wider text-red-100">Churn Rate</p>
+                        <h3 class="text-3xl font-extrabold mt-1">{{ churn_rate }}%</h3>
+                    </div>
+                    <div class="bg-red-600 bg-opacity-40 rounded-xl p-3">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-xs text-red-100 mt-4">Percentage of customers projected to churn</p>
+            </div>
+
+            <!-- Retention Rate Card -->
+            <div class="bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-2xl p-6 shadow-md border border-emerald-200">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-sm font-medium uppercase tracking-wider text-emerald-100">Retention Rate</p>
+                        <h3 class="text-3xl font-extrabold mt-1">{{ retention_rate }}%</h3>
+                    </div>
+                    <div class="bg-emerald-600 bg-opacity-40 rounded-xl p-3">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-xs text-emerald-100 mt-4">Percentage of customers projected to be retained</p>
+            </div>
+        </div>
+
+        <div class="space-y-12">
+            {% for name, data in visualizations.items() %}
+            <div class="bg-gray-50 border border-gray-200 rounded-xl p-6">
+                <h3 class="text-xl font-semibold text-indigo-900 mb-4 border-b border-gray-200 pb-2">{{ loop.index }}. {{ name }}</h3>
+                
+                <div class="mt-4">
+                    {% if data.type == 'image' %}
+                        <img src="{{ data.content }}" alt="{{ name }}" class="max-w-full h-auto rounded shadow-sm border border-gray-200 bg-white mx-auto">
+                    {% elif data.type == 'html' %}
+                        <div class="overflow-x-auto bg-white border border-gray-200 rounded shadow-sm p-4">
+                            {{ data.content|safe }}
+                        </div>
+                    {% else %}
+                        <p class="text-gray-700 italic bg-white border border-gray-200 rounded shadow-sm p-4">{{ data.content }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="mt-8 pt-6 border-t border-gray-100 flex justify-end">
+            <a href="{{ url_for('telecom_upload') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg">
+                Upload Another File / Go back
+            </a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

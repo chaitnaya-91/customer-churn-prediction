@@ -1,0 +1,368 @@
+{% extends "base.html" %}
+
+{% block title %}Trained Models - Churn Prediction{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <div class="mb-8 flex items-center justify-between">
+        <div>
+            <h1 class="text-4xl font-bold text-gray-900 mb-3">Trained Models</h1>
+            <p class="text-lg text-gray-600">Industry-specific churn prediction models powered by machine learning</p>
+        </div>
+        <div>
+            <button id="openHistory" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-md shadow">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18"/>
+                </svg>
+                Customer History
+            </button>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="fixed inset-0 bg-black bg-opacity-40 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl w-full max-w-3xl p-6 shadow-lg">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-semibold">Customer Prediction History</h2>
+                <button id="closeHistory" class="text-gray-500 hover:text-gray-700">Close</button>
+            </div>
+            <div class="mb-4 flex gap-2">
+                <input id="historyCustomerId" type="text" placeholder="Enter Customer ID (optional)" class="flex-1 border rounded px-3 py-2" />
+                <select id="historyIndustry" class="border rounded px-3 py-2">
+                    <option value="">All industries</option>
+                    <option value="telecom">Telecom</option>
+                    <option value="banking">Banking</option>
+                    <option value="ecommerce">E-commerce</option>
+                    <option value="subscription">Subscription</option>
+                    <option value="gym">Fitness</option>
+                    <option value="rideshare">RideShare</option>
+                </select>
+                <select id="historyDataset" class="border rounded px-3 py-2">
+                    <option value="">All datasets</option>
+                </select>
+                <button id="historySearch" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Search</button>
+            </div>
+
+            <div id="historyResults" class="space-y-3 max-h-64 overflow-auto">
+                <p class="text-gray-500">No search performed yet.</p>
+            </div>
+            <div class="mt-4 text-right">
+                <button id="historyShowMore" class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded hidden">Show more</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Models Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 max-w-5xl mx-auto">
+        
+        <!-- Telecom Model -->
+        <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-blue-500 hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold text-gray-900">Telecom Churn Model</h3>
+                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">Active</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-4">Best algorithm: SVM</p>
+                <div class="space-y-2 text-sm mb-6">
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Accuracy:</span>
+                        <span class="font-semibold text-gray-900">72.45%</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Training Samples:</span>
+                        <span class="font-semibold text-gray-900">9,595</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Test Samples:</span>
+                        <span class="font-semibold text-gray-900">2,399</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Mandatory Features:</span>
+                        <span class="font-semibold text-gray-900">9</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Other models:</span>
+                        <span class="font-semibold text-gray-900">Random Forest: 72.45%, XGBoost: 71.65%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex space-x-2">
+                <a href="{{ url_for('telecom_customer_predict') }}" class="flex-1 text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200">Predict Churn</a>
+                <a href="{{ url_for('telecom_upload') }}" class="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-md transition duration-200">Retrain</a>
+            </div>
+        </div>
+
+        <!-- Banking Model -->
+        <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-green-500 hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold text-gray-900">Banking Churn Model</h3>
+                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">Active</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-4">Best algorithm: XGBoost</p>
+                <div class="space-y-2 text-sm mb-6">
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Accuracy:</span>
+                        <span class="font-semibold text-gray-900">87.05%</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Training Samples:</span>
+                        <span class="font-semibold text-gray-900">8,000</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Test Samples:</span>
+                        <span class="font-semibold text-gray-900">2,000</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Mandatory Features:</span>
+                        <span class="font-semibold text-gray-900">9</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Other models:</span>
+                        <span class="font-semibold text-gray-900">SVM: 80.60%, Random Forest: 86.95%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex space-x-2">
+                <a href="{{ url_for('banking_customer_predict') }}" class="flex-1 text-center bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200">Predict Churn</a>
+                <a href="{{ url_for('banking_upload') }}" class="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-md transition duration-200">Retrain</a>
+            </div>
+        </div>
+
+        <!-- E-commerce Model -->
+        <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-purple-500 hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold text-gray-900">E-commerce Model</h3>
+                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">Active</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-4">Best algorithm: Random Forest</p>
+                <div class="space-y-2 text-sm mb-6">
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Accuracy:</span>
+                        <span class="font-semibold text-gray-900">69.79%</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Training Samples:</span>
+                        <span class="font-semibold text-gray-900">14,408</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Test Samples:</span>
+                        <span class="font-semibold text-gray-900">3,602</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Mandatory Features:</span>
+                        <span class="font-semibold text-gray-900">9</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Other models:</span>
+                        <span class="font-semibold text-gray-900">SVM: 66.21%, XGBoost: 69.68%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex space-x-2">
+                <a href="{{ url_for('ecommerce_customer_predict') }}" class="flex-1 text-center bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200">Predict Churn</a>
+                <a href="{{ url_for('ecommerce_upload') }}" class="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-md transition duration-200">Retrain</a>
+            </div>
+        </div>
+
+        <!-- Subscription Model -->
+        <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-red-500 hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold text-gray-900">Subscription Model</h3>
+                    <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-semibold">Updating</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-4">Best algorithm: Random Forest</p>
+                <div class="space-y-2 text-sm mb-6">
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Accuracy:</span>
+                        <span class="font-semibold text-gray-900">68.17%</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Training Samples:</span>
+                        <span class="font-semibold text-gray-900">16,009</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Test Samples:</span>
+                        <span class="font-semibold text-gray-900">4,003</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Mandatory Features:</span>
+                        <span class="font-semibold text-gray-900">12</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Other models:</span>
+                        <span class="font-semibold text-gray-900">SVM: 64.25%, XGBoost: 68.12%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex space-x-2">
+                <a href="{{ url_for('subscription_customer_predict') }}" class="flex-1 text-center bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200">Predict Churn</a>
+                <a href="{{ url_for('subscription_upload') }}" class="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-md transition duration-200">Retrain</a>
+            </div>
+        </div>
+
+        <!-- Fitness Model -->
+        <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-orange-500 hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold text-gray-900">Fitness Gym Model</h3>
+                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">Beta</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-4">Best algorithm: Random Forest</p>
+                <div class="space-y-2 text-sm mb-6">
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Accuracy:</span>
+                        <span class="font-semibold text-gray-900">68.03%</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Training Samples:</span>
+                        <span class="font-semibold text-gray-900">16,000</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Test Samples:</span>
+                        <span class="font-semibold text-gray-900">4,000</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Mandatory Features:</span>
+                        <span class="font-semibold text-gray-900">9</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Other models:</span>
+                        <span class="font-semibold text-gray-900">SVM: 65.51%, XGBoost: 68.33%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex space-x-2">
+                <a href="{{ url_for('fitness_customer_predict') }}" class="flex-1 text-center bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200">Predict Churn</a>
+                <a href="{{ url_for('fitness_upload') }}" class="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-md transition duration-200">Retrain</a>
+            </div>
+        </div>
+
+        <!-- Ride Sharing Model -->
+        <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-indigo-500 hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold text-gray-900">Ride Sharing Model</h3>
+                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">Beta</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-4">Best algorithm: Random Forest</p>
+                <div class="space-y-2 text-sm mb-6">
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Accuracy:</span>
+                        <span class="font-semibold text-gray-900">72.45%</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Training Samples:</span>
+                        <span class="font-semibold text-gray-900">16,014</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Test Samples:</span>
+                        <span class="font-semibold text-gray-900">4,004</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Mandatory Features:</span>
+                        <span class="font-semibold text-gray-900">17</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Other models:</span>
+                        <span class="font-semibold text-gray-900">SVM: 64.25%, XGBoost: 68.12%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex space-x-2">
+                <a href="{{ url_for('rideshare_customer_predict') }}" class="flex-1 text-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200">Predict Churn</a>
+                <a href="{{ url_for('rideshare_upload') }}" class="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-md transition duration-200">Retrain</a>
+            </div>
+        </div>
+
+    </div>
+
+    
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(() => {
+    const modal = document.getElementById('historyModal');
+    const openBtn = document.getElementById('openHistory');
+    const closeBtn = document.getElementById('closeHistory');
+    const searchBtn = document.getElementById('historySearch');
+    const resultsEl = document.getElementById('historyResults');
+    const showMoreBtn = document.getElementById('historyShowMore');
+    const cidInput = document.getElementById('historyCustomerId');
+    const industrySelect = document.getElementById('historyIndustry');
+
+    let offset = 0;
+    let lastQuery = null;
+    const pageSize = 5;
+
+    function openModal(){ modal.classList.remove('hidden'); modal.classList.add('flex'); resultsEl.innerHTML = '<p class="text-gray-500">Loading recent predictions...</p>'; offset = 0; showMoreBtn.classList.add('hidden'); lastQuery = { customerId: '', industry: '' }; fetchHistory('', '', false); }
+    function closeModal(){ modal.classList.remove('flex'); modal.classList.add('hidden'); }
+
+    openBtn.addEventListener('click', async function(){
+        // populate datasets before opening
+        try{
+            const dres = await fetch('/api/datasets');
+            if(dres.ok){
+                const dd = await dres.json();
+                // fill dataset select: include option for selected industry
+                const ds = document.getElementById('historyDataset');
+                ds.innerHTML = '<option value="">All datasets</option>';
+                Object.keys(dd).forEach(k => {
+                    const opt = document.createElement('option'); opt.value = dd[k]; opt.text = `${k} - ${dd[k]}`; ds.appendChild(opt);
+                });
+            }
+        }catch(e){/*ignore*/}
+        openModal();
+    });
+    closeBtn.addEventListener('click', closeModal);
+
+    async function fetchHistory(customerId, industry, append=false){
+        // customerId is optional — if not provided, list recent predictions across industries (or for selected industry)
+        const ds = document.getElementById('historyDataset');
+        const dataset = ds ? ds.value : '';
+        const q = { customer_id: customerId, industry: industry, dataset: dataset, limit: pageSize, offset: offset };
+        const params = new URLSearchParams(q);
+        const res = await fetch('/api/prediction/history?' + params.toString());
+        if(!res.ok){ resultsEl.innerHTML = '<p class="text-red-500">Error fetching history.</p>'; return; }
+        const data = await res.json();
+        const entries = data.entries || [];
+        if(!append) resultsEl.innerHTML = '';
+        if(entries.length === 0 && !append){ resultsEl.innerHTML = '<p class="text-gray-500">No history found for the selected filters.</p>'; showMoreBtn.classList.add('hidden'); return; }
+        entries.forEach(e => {
+            const div = document.createElement('div');
+            div.className = 'p-3 border rounded-lg flex items-center justify-between';
+            div.innerHTML = `
+                <div>
+                    <div class="text-sm text-gray-600">${new Date(e.created_at).toLocaleString()}</div>
+                    <div class="font-medium">${e.industry || '—'} — ${e.customer_id || 'Manual'}</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm font-semibold ${e.churn_risk=='High'? 'text-red-600': e.churn_risk=='Medium'?'text-yellow-600':'text-green-600'}">${e.churn_risk}</div>
+                    <div class="text-sm text-gray-600">${e.risk_score}%</div>
+                    <div class="mt-2"><a href="/prediction/view?customer_id=${encodeURIComponent(e.customer_id)}&industry=${encodeURIComponent(e.industry)}" class="text-indigo-600 hover:text-indigo-800 text-sm">View</a></div>
+                </div>`;
+            resultsEl.appendChild(div);
+        });
+
+        const total = data.total || 0;
+        offset += entries.length;
+        if(offset < total){ showMoreBtn.classList.remove('hidden'); } else { showMoreBtn.classList.add('hidden'); }
+    }
+
+    searchBtn.addEventListener('click', function(){
+        offset = 0; lastQuery = { customerId: cidInput.value.trim(), industry: industrySelect.value };
+        resultsEl.innerHTML = '<p class="text-gray-500">Searching...</p>';
+        fetchHistory(lastQuery.customerId, lastQuery.industry, false);
+    });
+
+    showMoreBtn.addEventListener('click', function(){
+        if(!lastQuery) return;
+        fetchHistory(lastQuery.customerId, lastQuery.industry, true);
+    });
+})();
+</script>
+{% endblock %}

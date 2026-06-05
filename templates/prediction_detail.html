@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction Detail - Churn Prediction{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto py-8">
+  <div class="bg-white shadow rounded-lg p-6">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Prediction Detail</h2>
+
+    <dl class="grid grid-cols-1 gap-4 text-sm">
+      <div>
+        <dt class="text-gray-500">Customer ID</dt>
+        <dd class="text-gray-900">{{ prediction.customer_id }}</dd>
+      </div>
+      <div>
+        <dt class="text-gray-500">Industry</dt>
+        <dd class="text-gray-900">{{ prediction.industry }}</dd>
+      </div>
+      <div>
+        <dt class="text-gray-500">Churn Risk</dt>
+        <dd class="text-gray-900">{{ prediction.churn_risk }} ({{ prediction.risk_score }}%)</dd>
+      </div>
+      <div>
+        <dt class="text-gray-500">Reasons</dt>
+        <dd class="text-gray-900">{% for r in prediction.reasons %} <div>- {{ r }}</div> {% endfor %}</dd>
+      </div>
+      <div>
+        <dt class="text-gray-500">Created At</dt>
+        <dd class="text-gray-900">{{ prediction.created_at }}</dd>
+      </div>
+    </dl>
+
+    <div class="mt-6">
+      <a href="{{ url_for('dashboard') }}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-md">Back</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

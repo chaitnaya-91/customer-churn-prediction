@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Dataset - Churn Prediction{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow">
+  <h1 class="text-2xl font-bold mb-4">Submit Dataset</h1>
+  <p class="text-gray-600 mb-6">Provide your dataset and requirements; our team will review and process it.</p>
+
+  <form action="{{ url_for('submit_dataset') }}" method="post" enctype="multipart/form-data" class="space-y-6">
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Full Name *</label>
+      <input name="full_name" value="{{ form.full_name if form else '' }}" required class="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-600" />
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Email Address *</label>
+        <input type="email" name="email" value="{{ form.email if form else '' }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Phone Number *</label>
+        <input name="phone" value="{{ form.phone if form else '' }}" required class="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-600" />
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">City *</label>
+      <input name="city" value="{{ form.city if form else '' }}" required class="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-600" />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Upload Dataset (.csv) *</label>
+      <input type="file" name="dataset_file" accept=".csv" required class="mt-1 block w-full text-sm text-gray-600 border border-dashed border-gray-300 rounded-md p-2 bg-white" />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">What outcome do you want to predict? *</label>
+      <select name="outcome" required class="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-600">
+        <option value="Customer Churn">Customer Churn</option>
+        <option value="Customer Retention">Customer Retention</option>
+        <option value="Subscription Cancellation">Subscription Cancellation</option>
+        <option value="Customer Risk Analysis">Customer Risk Analysis</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Questions / Requirements *</label>
+      <textarea name="questions" rows="4" required class="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-600" placeholder="Describe your business problem or questions">{{ form.questions if form else '' }}</textarea>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Expected Insights / Outcome</label>
+      <textarea name="expected" rows="3" class="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-600" placeholder="Example: Identify high-risk customers">{{ form.expected if form else '' }}</textarea>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Additional Notes (Optional)</label>
+      <textarea name="notes" rows="2" class="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-600" placeholder="Any extra information">{{ form.notes if form else '' }}</textarea>
+    </div>
+
+    <div class="flex justify-end">
+      <button type="submit" class="inline-flex items-center px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Submit</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

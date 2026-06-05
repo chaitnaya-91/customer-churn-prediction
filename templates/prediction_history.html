@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction History{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="mb-6">
+        <a href="{{ url_for('dashboard') }}" class="text-gray-500 hover:text-gray-700 text-sm">← Back</a>
+        <h1 class="text-2xl font-bold mt-3">Prediction History</h1>
+        <p class="text-sm text-gray-500 mt-1">Showing predictions for
+            {% if industry %}<strong>{{ industry|title }}</strong>{% else %}all industries{% endif %}
+            {% if customer_id %} — Customer ID: <strong>{{ customer_id }}</strong>{% endif %}
+        </p>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow p-6">
+        {% if entries and entries|length > 0 %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead>
+                    <tr class="text-gray-500">
+                        <th class="px-3 py-2">When</th>
+                        <th class="px-3 py-2">Industry</th>
+                        <th class="px-3 py-2">Customer ID</th>
+                        <th class="px-3 py-2">Risk</th>
+                        <th class="px-3 py-2">Score</th>
+                        <th class="px-3 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for e in entries %}
+                    <tr class="border-t">
+                        <td class="px-3 py-3 text-gray-600">{{ e.created_at.strftime('%Y-%m-%d %H:%M') if e.created_at else '—' }}</td>
+                        <td class="px-3 py-3 text-gray-700">{{ e.industry if e.industry else '—' }}</td>
+                        <td class="px-3 py-3 text-gray-700">{{ e.customer_id if e.customer_id else 'Manual Entry' }}</td>
+                        <td class="px-3 py-3">
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold
+                                {% if e.churn_risk == 'High' %}bg-red-100 text-red-700
+                                {% elif e.churn_risk == 'Medium' %}bg-yellow-100 text-yellow-700
+                                {% else %}bg-green-100 text-green-700{% endif %}">
+                                {{ e.churn_risk }}
+                            </span>
+                        </td>
+                        <td class="px-3 py-3 text-gray-700">{{ e.risk_score }}%</td>
+                        <td class="px-3 py-3">
+                            <a href="{{ url_for('view_prediction') }}?customer_id={{ e.customer_id }}&industry={{ e.industry }}" class="text-violet-600 hover:text-violet-800 text-sm font-medium">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-gray-500">No prediction history found for the selected filters.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

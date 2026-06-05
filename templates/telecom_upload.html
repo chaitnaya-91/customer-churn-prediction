@@ -1,0 +1,384 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Telecom Dataset - Churn Prediction{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-8">
+        <a href="{{ url_for('predict') }}" class="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium mb-4 transition-colors duration-200">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Back to Industry Selection
+        </a>
+        <div class="flex items-center gap-4">
+            <div class="bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl p-3">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Telecom Churn — Upload Dataset</h1>
+                <p class="text-gray-500 mt-1">Upload a CSV file with customer data to run batch churn prediction</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Dataset Dashboard -->
+    {% if filename %}
+    <div class="bg-white rounded-2xl shadow-lg p-8 mb-6 border border-blue-100">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+                <div class="bg-blue-100 text-blue-700 rounded-xl p-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">Active Dataset</span>
+                    <h2 class="text-xl font-bold text-gray-900 mt-0.5">{{ filename }}</h2>
+                    <p class="text-xs text-gray-500 mt-1">Uploaded and fully processed</p>
+                </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+                <!-- Visualize Button (goes to dedicated route) -->
+                <a href="{{ url_for('telecom_visualize') }}"
+                   class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+                    </svg>
+                    Visualize Analytics
+                </a>
+
+                <!-- Customer Prediction Button -->
+                <a href="{{ url_for('telecom_customer_predict') }}"
+                   class="flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    Customer Prediction
+                </a>
+                
+                <!-- Remove Dataset Button -->
+                <form action="{{ url_for('telecom_remove_dataset') }}" method="POST" class="inline">
+                    <button type="submit"
+                            class="flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 border border-red-200">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                        Remove Dataset
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Upload Card -->
+    {% if not filename %}
+    <div class="bg-white rounded-2xl shadow-lg p-8 mb-6">
+
+        <form id="uploadForm" action="{{ url_for('telecom_upload') }}" method="POST" enctype="multipart/form-data">
+
+            <!-- Drag-and-drop Zone -->
+            <div id="dropZone"
+                 class="border-2 border-dashed border-blue-300 rounded-xl p-12 text-center cursor-pointer transition-all duration-300 hover:border-blue-500 hover:bg-blue-50 bg-gray-50"
+                 onclick="document.getElementById('csvFile').click()">
+
+                <div id="dropIcon" class="flex flex-col items-center">
+                    <div class="bg-blue-100 rounded-full p-5 mb-4">
+                        <svg class="w-12 h-12 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                        </svg>
+                    </div>
+                    <p class="text-xl font-semibold text-gray-700 mb-1">Drop your CSV file here</p>
+                    <p class="text-gray-400 text-sm">or <span class="text-blue-500 font-medium">click to browse</span></p>
+                    <p class="text-gray-400 text-xs mt-3">Accepted format: <strong>.csv</strong> &nbsp;|&nbsp; Max size: <strong>10 MB</strong></p>
+                </div>
+
+                <!-- File Selected State -->
+                <div id="fileSelected" class="hidden flex-col items-center">
+                    <div class="bg-green-100 rounded-full p-4 mb-3">
+                        <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <p id="fileName" class="text-lg font-semibold text-gray-800"></p>
+                    <p id="fileSize" class="text-sm text-gray-500 mt-1"></p>
+                    <button type="button" onclick="clearFile(event)"
+                            class="mt-3 text-xs text-red-500 hover:text-red-700 underline font-medium">
+                        Remove file
+                    </button>
+                </div>
+
+                <input type="file" id="csvFile" name="csv_file" accept=".csv" class="hidden">
+            </div>
+
+            <!-- Error Message -->
+            <div id="fileError" class="hidden mt-3 flex items-center gap-2 text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span id="fileErrorMsg"></span>
+            </div>
+
+            <!-- Expected Columns Information -->
+            <div class="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6">
+                <h4 class="font-bold text-blue-900 flex items-center gap-2 mb-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Expected CSV Columns
+                </h4>
+                <div class="flex flex-wrap gap-2">
+                    {% for col in ['tenure', 'monthlycharges', 'totalcharges', 'datausage', 'customersupportcalls', 'complaints', 'lastrechargedaysago', 'autopay', 'internetservice', 'churn'] %}
+                    <span class="bg-white border border-blue-300 text-blue-700 text-xs font-mono px-3 py-1 rounded-full">{{ col }}</span>
+                    {% endfor %}
+                </div>
+                <p class="text-xs text-blue-700 mt-3">
+                    💡 Column names are case-insensitive. Extra columns will be ignored automatically.
+                </p>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="mt-8 flex flex-wrap items-center gap-4">
+                <button type="submit" name="action" value="train" id="submitBtnTrain" disabled
+                        class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold px-8 py-3 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg action-btn">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    Initialize Training
+                </button>
+                
+                <button type="submit" name="action" value="tune" id="submitBtnTune" disabled
+                        class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold px-8 py-3 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg action-btn">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    Hyperparameter Tuning
+                </button>
+
+
+                <!-- Customer Prediction Button -->
+                <a href="{{ url_for('telecom_customer_predict') }}"
+                   class="flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white font-semibold px-8 py-3 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    Customer Prediction
+                </a>
+
+                <a href="{{ url_for('predict') }}"
+                   class="text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors duration-200">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- CSV Preview (populated by client-side JS) -->
+    <div id="previewSection" class="hidden bg-white rounded-2xl shadow-sm p-6 mt-6 border border-gray-100">
+        <h4 class="font-semibold text-gray-800 mb-3">Preview <span id="rowCount" class="text-sm text-gray-500"></span></h4>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead id="previewHead" class="bg-gray-50 text-gray-700"></thead>
+                <tbody id="previewBody" class="bg-white text-gray-700"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Results Section (shown after POST) -->
+    {% if results %}
+    <div class="bg-white rounded-2xl shadow-lg p-8 mt-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">🎯 Training Results</h2>
+        
+        <!-- Churn and Retention KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Churn Rate Card -->
+            <div class="bg-gradient-to-br from-red-500 to-rose-600 text-white rounded-2xl p-6 shadow-md border border-red-200">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-sm font-medium uppercase tracking-wider text-red-100">Dataset Churn Rate</p>
+                        <h3 class="text-3xl font-extrabold mt-1">{{ results.churn_rate }}%</h3>
+                    </div>
+                    <div class="bg-red-600 bg-opacity-40 rounded-xl p-3">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Retention Rate Card -->
+            <div class="bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-2xl p-6 shadow-md border border-emerald-200">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-sm font-medium uppercase tracking-wider text-emerald-100">Dataset Retention Rate</p>
+                        <h3 class="text-3xl font-extrabold mt-1">{{ results.retention_rate }}%</h3>
+                    </div>
+                    <div class="bg-emerald-600 bg-opacity-40 rounded-xl p-3">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {% for model, score in results.scores.items() %}
+            <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center {% if results.best_model == model %}ring-2 ring-blue-500 bg-blue-50{% endif %}">
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ model }}</h3>
+                <div class="text-3xl font-bold {% if results.best_model == model %}text-blue-600{% else %}text-gray-600{% endif %}">
+                    {{ "%.2f"|format(score * 100) }}%
+                </div>
+                <p class="text-sm text-gray-500 mt-2">Accuracy Score</p>
+                {% if results.best_model == model %}
+                <span class="inline-block mt-3 bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
+                    Best Model
+                </span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="bg-green-50 border border-green-200 rounded-xl p-6">
+            <h4 class="font-bold text-green-900 flex items-center gap-2 mb-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Training Successful
+            </h4>
+            <p class="text-green-800">
+                The <strong>{{ results.best_model }}</strong> model was selected with the highest accuracy of <strong>{{ "%.2f"|format(results.best_score * 100) }}%</strong>.
+                It has been saved and is now ready for customer predictions.
+            </p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- JavaScript for drag-drop, preview, validation -->
+<script>
+const dropZone     = document.getElementById('dropZone');
+const fileInput    = document.getElementById('csvFile');
+const dropIcon     = document.getElementById('dropIcon');
+const fileSelected = document.getElementById('fileSelected');
+const fileNameEl   = document.getElementById('fileName');
+const fileSizeEl   = document.getElementById('fileSize');
+const fileError    = document.getElementById('fileError');
+const fileErrorMsg = document.getElementById('fileErrorMsg');
+const submitBtnTrain = document.getElementById('submitBtnTrain');
+const submitBtnTune  = document.getElementById('submitBtnTune');
+const submitBtnVis   = document.getElementById('submitBtnVisualize');
+const actionBtns     = document.querySelectorAll('.action-btn');
+const previewSec   = document.getElementById('previewSection');
+const rowCountEl   = document.getElementById('rowCount');
+
+// Drag events
+['dragenter','dragover'].forEach(evt => {
+    dropZone.addEventListener(evt, e => {
+        e.preventDefault();
+        dropZone.classList.add('border-blue-500', 'bg-blue-50');
+    });
+});
+['dragleave','dragend'].forEach(evt => {
+    dropZone.addEventListener(evt, () => {
+        dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+    });
+});
+dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+});
+
+fileInput.addEventListener('change', () => {
+    if (fileInput.files[0]) handleFile(fileInput.files[0]);
+});
+
+function handleFile(file) {
+    hideError();
+
+    // Validate type
+    if (!file.name.toLowerCase().endsWith('.csv')) {
+        showError('Only .csv files are accepted. Please upload a valid CSV file.');
+        return;
+    }
+    // Validate size (10 MB)
+    if (file.size > 10 * 1024 * 1024) {
+        showError('File size exceeds 10 MB. Please upload a smaller file.');
+        return;
+    }
+
+    // Update UI to selected state
+    fileNameEl.textContent = file.name;
+    fileSizeEl.textContent = formatBytes(file.size);
+    dropIcon.classList.add('hidden');
+    fileSelected.classList.remove('hidden');
+    fileSelected.classList.add('flex');
+    actionBtns.forEach(btn => btn.disabled = false);
+
+    // Read and preview CSV
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const text = e.target.result;
+        renderPreview(text);
+    };
+    reader.readAsText(file);
+}
+
+function renderPreview(text) {
+    const lines = text.trim().split('\n').filter(l => l.trim() !== '');
+    if (lines.length < 2) { previewSec.classList.add('hidden'); return; }
+
+    const headers = lines[0].split(',').map(h => h.trim().replace(/"/g,''));
+    const rows    = lines.slice(1, 6); // first 5 rows
+
+    // Head
+    const thead = document.getElementById('previewHead');
+    thead.innerHTML = '<tr>' + headers.map(h => `<th class="px-3 py-2 whitespace-nowrap">${h}</th>`).join('') + '</tr>';
+
+    // Body
+    const tbody = document.getElementById('previewBody');
+    tbody.innerHTML = rows.map(row => {
+        const cols = row.split(',').map(c => c.trim().replace(/"/g,''));
+        return '<tr class="hover:bg-gray-50">' + cols.map(c => `<td class="px-3 py-2 whitespace-nowrap text-gray-600">${c}</td>`).join('') + '</tr>';
+    }).join('');
+
+    rowCountEl.textContent = `(${lines.length - 1} rows detected)`;
+    previewSec.classList.remove('hidden');
+}
+
+function clearFile(e) {
+    e.stopPropagation();
+    fileInput.value = '';
+    dropIcon.classList.remove('hidden');
+    fileSelected.classList.add('hidden');
+    fileSelected.classList.remove('flex');
+    actionBtns.forEach(btn => btn.disabled = true);
+    previewSec.classList.add('hidden');
+    hideError();
+}
+
+function showError(msg) {
+    fileErrorMsg.textContent = msg;
+    fileError.classList.remove('hidden');
+}
+function hideError() {
+    fileError.classList.add('hidden');
+    fileErrorMsg.textContent = '';
+}
+function formatBytes(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+}
+</script>
+{% endblock %}

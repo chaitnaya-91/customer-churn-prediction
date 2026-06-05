@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Churn Prediction{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-xl p-12 mb-8 text-white">
+    <div class="text-center">
+        <h1 class="text-5xl font-bold mb-4">Welcome to Customer Churn Prediction System</h1>
+        <p class="text-xl mb-8 text-blue-100">Predict customer churn with AI-powered insights using simple, effective analytics</p>
+        {% if not session.user_id %}
+        <div class="flex justify-center space-x-4">
+            <a href="{{ url_for('register') }}" class="bg-white text-blue-600 hover:bg-blue-50 px-8 py-3 rounded-md font-semibold text-lg transition duration-200">Get Started</a>
+            <a href="{{ url_for('login') }}" class="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 rounded-md font-semibold text-lg transition duration-200">Sign In</a>
+        </div>
+        {% else %}
+        <div class="flex justify-center space-x-4">
+            <a href="{{ url_for('predict') }}" class="bg-white text-blue-600 hover:bg-blue-50 px-8 py-3 rounded-md font-semibold text-lg transition duration-200">Make Prediction</a>
+            <a href="{{ url_for('dashboard') }}" class="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 rounded-md font-semibold text-lg transition duration-200">View Dashboard</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Features Overview -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Advanced Analytics</h3>
+        <p class="text-gray-600">Simple yet powerful rule-based algorithm to predict customer churn risk with actionable insights.</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <div class="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.852M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.852M7 20H2v-2a3 3 0 015.356-1.852M7 20v-2c0-.656.126-1.283.356-1.852m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Customer Management</h3>
+        <p class="text-gray-600">Easily add, view, and manage customer data with an intuitive interface and MongoDB backend.</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+            <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Real-time Predictions</h3>
+        <p class="text-gray-600">Get instant churn predictions with color-coded risk levels and detailed factor analysis.</p>
+    </div>
+</div>
+
+<!-- How It Works -->
+<div class="bg-white rounded-lg shadow-md p-8 mb-8">
+    <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">How It Works</h2>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="text-center">
+            <div class="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">1</div>
+            <h3 class="font-semibold text-gray-900 mb-2">Register Account</h3>
+            <p class="text-gray-600 text-sm">Create your free account in seconds</p>
+        </div>
+        <div class="text-center">
+            <div class="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">2</div>
+            <h3 class="font-semibold text-gray-900 mb-2">Add Customers</h3>
+            <p class="text-gray-600 text-sm">Input customer details and information</p>
+        </div>
+        <div class="text-center">
+            <div class="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">3</div>
+            <h3 class="font-semibold text-gray-900 mb-2">Run Prediction</h3>
+            <p class="text-gray-600 text-sm">Analyze churn risk with our algorithm</p>
+        </div>
+        <div class="text-center">
+            <div class="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">4</div>
+            <h3 class="font-semibold text-gray-900 mb-2">Take Action</h3>
+            <p class="text-gray-600 text-sm">Use insights to prevent customer churn</p>
+        </div>
+    </div>
+</div>
+
+<!-- Project Overview (Industry-agnostic) -->
+<div class="bg-white rounded-lg shadow-md p-8 mb-8">
+    <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">What We Analyze</h2>
+    <p class="text-center text-gray-600 mb-6">Our platform adapts per industry and dataset. Instead of fixed rules, we analyze data quality, model performance, and provide actionable recommendations tailored to your business.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-4 rounded-lg border">
+            <h3 class="font-semibold text-gray-900 mb-2">Data & Features</h3>
+            <p class="text-gray-600 text-sm">Assess data quality, discover informative features, handle missing values and outliers, and engineer domain-relevant variables.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-lg border">
+            <h3 class="font-semibold text-gray-900 mb-2">Model Performance & Explainability</h3>
+            <p class="text-gray-600 text-sm">Evaluate models with standard metrics, inspect feature importance, and produce interpretable explanations for predictions.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-lg border">
+            <h3 class="font-semibold text-gray-900 mb-2">Segmentation & Cohorts</h3>
+            <p class="text-gray-600 text-sm">Identify high-risk customer segments using behavior, demographics, or product usage to target retention efforts effectively.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-lg border">
+            <h3 class="font-semibold text-gray-900 mb-2">Actionable Recommendations</h3>
+            <p class="text-gray-600 text-sm">Translate predictions into concrete actions: personalized offers, churn-reduction campaigns, and monitoring alerts.</p>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+{% if not session.user_id %}
+<div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow-xl p-12 text-center text-white">
+    <h2 class="text-3xl font-bold mb-4">Ready to Predict Customer Churn?</h2>
+    <p class="text-xl mb-8 text-green-100">Join now and start making data-driven decisions to retain your customers</p>
+    <a href="{{ url_for('register') }}" class="inline-block bg-white text-green-600 hover:bg-green-50 px-8 py-3 rounded-md font-semibold text-lg transition duration-200">Get Started for Free</a>
+</div>
+{% endif %}
+
+<!-- Founders Section -->
+<div class="bg-white rounded-2xl shadow-md border border-gray-100 p-8 mt-12 mb-8">
+    <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold text-gray-900">Founders of this Prediction System</h2>
+        <p class="text-sm text-gray-500 mt-1">The creators behind the Customer Churn Prediction platform</p>
+        <div class="h-1 w-20 bg-gradient-to-r from-blue-500 to-indigo-500 mx-auto mt-3 rounded-full"></div>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <!-- Founder 1 -->
+        <div class="p-6 bg-gradient-to-br from-purple-50/50 to-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-purple-100 transition-all duration-300 group text-center">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xl mx-auto mb-4 shadow-md group-hover:scale-110 transition-transform duration-300">
+                AK
+            </div>
+            <h3 class="font-extrabold text-gray-800 text-lg group-hover:text-purple-600 transition-colors duration-200">Abhijeet Kadam</h3>
+            <p class="text-xs text-purple-600 font-bold uppercase tracking-wider mt-1.5">Founder & Developer</p>
+        </div>
+        
+        <!-- Founder 2 -->
+        <div class="p-6 bg-gradient-to-br from-blue-50/50 to-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-100 transition-all duration-300 group text-center">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xl mx-auto mb-4 shadow-md group-hover:scale-110 transition-transform duration-300">
+                CG
+            </div>
+            <h3 class="font-extrabold text-gray-800 text-lg group-hover:text-blue-600 transition-colors duration-200">Chaitanya Gaikwad</h3>
+            <p class="text-xs text-blue-600 font-bold uppercase tracking-wider mt-1.5">Founder & Developer</p>
+        </div>
+        
+        <!-- Founder 3 -->
+        <div class="p-6 bg-gradient-to-br from-emerald-50/50 to-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-emerald-100 transition-all duration-300 group text-center">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-600 text-white font-bold flex items-center justify-center text-xl mx-auto mb-4 shadow-md group-hover:scale-110 transition-transform duration-300">
+                SS
+            </div>
+            <h3 class="font-extrabold text-gray-800 text-lg group-hover:text-emerald-600 transition-colors duration-200">Samarth Sonawane</h3>
+            <p class="text-xs text-emerald-600 font-bold uppercase tracking-wider mt-1.5">Founder & Developer</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

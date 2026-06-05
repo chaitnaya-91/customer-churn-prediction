@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy - Churn Prediction{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-md border border-gray-100 p-8 md:p-12 my-6">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-6 border-b border-gray-100 pb-4">Privacy Policy</h1>
+    
+    <p class="text-sm text-gray-500 mb-8">Last Updated: June 4, 2026</p>
+    
+    <div class="space-y-8 text-gray-700 leading-relaxed">
+        <section>
+            <h2 class="text-2xl font-bold text-gray-950 mb-3">1. Information We Collect</h2>
+            <p class="mb-3">
+                We only collect information necessary to run customer churn predictions. This includes data you upload (such as customer usage, tenure, charges, and payment methods) and basic account credentials (name, email address).
+            </p>
+            <p>
+                All uploaded dataset files are processed locally on our secure servers and are not distributed, shared, or sold to third parties.
+            </p>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold text-gray-950 mb-3">2. How We Use Your Data</h2>
+            <p class="mb-3">
+                The information you input or upload is used exclusively to:
+            </p>
+            <ul class="list-disc pl-6 space-y-2">
+                <li>Generate churn risk assessments and factor breakdowns.</li>
+                <li>Train, evaluate, and tune prediction models specifically for your accounts.</li>
+                <li>Provide dashboard statistics and custom history retention.</li>
+                <li>Improve our service algorithms and performance.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold text-gray-950 mb-3">3. Data Security and Retention</h2>
+            <p class="mb-3">
+                We implement robust security measures to protect your user data and customer files. All database communication is encrypted using secure protocols, and sensitive passwords are encrypted via industry-standard hashing algorithms (bcrypt).
+            </p>
+            <p>
+                You retain complete control of your data. You may delete any uploaded datasets, trained model parameters, or prediction history from your settings dashboard at any time.
+            </p>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold text-gray-950 mb-3">4. Third-Party Services</h2>
+            <p>
+                We do not integrate with external third-party advertisers or data brokers. All data analysis, storage, and processing reside in our secure environment.
+            </p>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold text-gray-950 mb-3">5. Contact Information</h2>
+            <p>
+                If you have any questions or concerns regarding this Privacy Policy, please contact our data protection team directly at 
+                <a href="mailto:analytics@churnpredict.ai" class="text-blue-600 hover:text-blue-700 underline font-semibold">analytics@churnpredict.ai</a>.
+            </p>
+        </section>
+    </div>
+</div>
+{% endblock %}

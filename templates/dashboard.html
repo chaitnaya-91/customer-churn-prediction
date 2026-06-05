@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Churn Prediction{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-6">
+
+    <!-- Header Section -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-extrabold text-gray-900">Dashboard</h1>
+            <p class="text-sm text-gray-500 mt-1">Welcome back, {{ session.user_name }}!</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold 
+                {% if session.user_role == 'admin' %}bg-red-100 text-red-700
+                {% elif session.user_role == 'premium' %}bg-purple-100 text-purple-700
+                {% elif session.user_role == 'gold' %}bg-amber-100 text-amber-700
+                {% else %}bg-gray-100 text-gray-700{% endif %}">
+                Role: {{ session.user_role|title if session.user_role else 'User' }}
+            </span>
+            {% if session.user_role == 'admin' %}
+            <a href="{{ url_for('admin_panel') }}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-semibold transition">
+                ⚙️ Admin Panel
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center gap-4">
+            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl font-bold">📊</div>
+            <div>
+                <div class="text-sm text-gray-500 font-medium">Total Predictions</div>
+                <div class="text-2xl font-extrabold text-gray-900">{{ recent_predictions|length }}</div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center gap-4">
+            <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-2xl font-bold">📈</div>
+            <div>
+                <div class="text-sm text-gray-500 font-medium">Industries Analyzed</div>
+                <div class="text-2xl font-extrabold text-gray-900">
+                    {{ recent_predictions | map(attribute='industry') | unique | list | length }}
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center gap-4">
+            <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-2xl font-bold">⭐</div>
+            <div>
+                <div class="text-sm text-gray-500 font-medium">Account Status</div>
+                <div class="text-xl font-extrabold text-gray-900">
+                    {% if session.user_role in ['admin', 'premium', 'gold'] %} Active {% else %} Basic {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Membership CTA -->
+    <div class="mt-6">
+        <div id="membershipCard" class="relative rounded-2xl overflow-hidden shadow-2xl cursor-pointer group" style="background: linear-gradient(135deg, #f59e0b 0%, #ef4444 40%, #8b5cf6 100%);">
+            <!-- Animated background blobs -->
+            <div class="absolute -top-10 -right-10 w-48 h-48 bg-white/10 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700"></div>
+            <div class="absolute -bottom-8 -left-8 w-36 h-36 bg-white/10 rounded-full blur-xl group-hover:scale-110 transition-transform duration-700"></div>
+            <div class="relative p-8">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <!-- Left content -->
+                    <div class="text-white flex-1">
+                        <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold text-white mb-3">
+                            <span class="w-2 h-2 bg-green-300 rounded-full animate-pulse"></span> LIMITED OFFER
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight">Unlock Premium Access</h2>
+                        <p class="mt-2 text-white/85 text-sm md:text-base">Priority model training, advanced insights & dedicated support.</p>
+                        <!-- Plan badges -->
+                        <div class="flex gap-3 mt-4">
+                            <div class="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-xl text-center">
+                                <div class="text-xl font-bold">&#8377;500</div>
+                                <div class="text-xs text-white/80">Gold Plan</div>
+                            </div>
+                            <div class="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-xl text-center">
+                                <div class="text-xl font-bold">&#8377;1000</div>
+                                <div class="text-xs text-white/80">Premium Plan</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Right content -->
+                    <div class="flex flex-col items-center gap-4">
+                        <div class="text-6xl animate-bounce">👑</div>
+                        <button id="openMembershipForm" class="inline-flex items-center gap-2 px-8 py-3 bg-white text-purple-700 font-bold rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 text-sm">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            Join Now — It's Easy!
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Membership Modal -->
+    <div id="membershipModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden animate-in flex flex-col max-h-[95vh]">
+            <div class="overflow-y-auto">
+                <!-- Modal Header -->
+                <div class="relative p-6 pb-4" style="background: linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #8b5cf6 100%);">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-2xl font-extrabold text-white">Join Premium Membership 👑</h3>
+                            <p class="text-white/80 text-sm mt-1">Fill in your details and complete payment to activate</p>
+                        </div>
+                        <button id="closeMembershipForm" type="button" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/40 transition font-bold text-lg">✕</button>
+                    </div>
+                </div>
+
+                <form id="membershipForm" class="p-6 space-y-5" enctype="multipart/form-data">
+                    <!-- Name & Email row -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Full Name</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">👤</span>
+                                <input name="name" value="{{ session.user_name }}" readonly class="pl-9 w-full border border-gray-200 rounded-xl py-2.5 bg-gray-50 text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-amber-400" />
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Email</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">✉️</span>
+                                <input name="email" value="{{ session.get('email', '') }}" placeholder="your@email.com" class="pl-9 w-full border border-gray-200 rounded-xl py-2.5 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-400" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- City & Plan row -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">City</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">📍</span>
+                                <input name="city" placeholder="Your City" required class="pl-9 w-full border border-gray-200 rounded-xl py-2.5 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-400" />
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Select Plan</label>
+                            <select id="membershipPlanSelect" name="plan" class="w-full border border-gray-200 rounded-xl py-2.5 px-3 bg-white text-gray-700 font-semibold focus:outline-none focus:ring-2 focus:ring-amber-400 cursor-pointer">
+                                <option value="gold">⭐ Gold — ₹500/month</option>
+                                <option value="premium">👑 Premium — ₹1000/month</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Payment Section -->
+                    <div id="paymentBox" class="rounded-2xl border-2 border-amber-200 bg-amber-50 p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-amber-600 text-lg">💳</span>
+                            <h4 class="font-bold text-amber-800">Payment Details</h4>
+                        </div>
+                        <p id="paymentAmountText" class="text-sm font-semibold text-amber-700 mb-4 bg-amber-100 rounded-lg px-3 py-2 inline-block">Pay ₹500 for Gold Membership</p>
+                        <div class="flex flex-col sm:flex-row items-center gap-4">
+                            <!-- QR Code -->
+                            <div class="flex-shrink-0 text-center">
+                                <img src="{{ url_for('static', filename='large-qr-code-scanner-icon-600nw-1860172933.webp') }}" alt="Payment QR Code" class="w-28 h-28 object-contain border-2 border-amber-300 rounded-xl shadow-md bg-white p-1" />
+                                <p class="text-xs text-amber-600 font-medium mt-1">Scan & Pay</p>
+                            </div>
+                            <!-- Upload -->
+                            <div class="flex-1 w-full">
+                                <label class="block text-xs font-semibold text-gray-600 mb-2">Upload Payment Screenshot <span class="text-red-500">*</span></label>
+                                <label class="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-amber-300 rounded-xl cursor-pointer bg-white hover:bg-amber-50 transition group">
+                                    <div class="text-center">
+                                        <svg class="w-6 h-6 text-amber-400 mx-auto mb-1 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                                        <p class="text-xs text-amber-600 font-medium" id="fileLabel">Click to upload screenshot</p>
+                                    </div>
+                                    <input type="file" name="payment_screenshot" id="paymentFileInput" accept="image/*" required class="hidden" />
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="flex items-center justify-between pt-2">
+                        <div id="membershipMsg" class="text-sm font-medium"></div>
+                        <button type="submit" id="membershipSubmitBtn" class="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Submit Request
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Predictions -->
+    {% if recent_predictions %}
+    <div class="bg-white shadow rounded-lg p-6 mt-8">
+        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Your Recent Predictions</h3>
+        <ul class="space-y-3">
+        {% for p in recent_predictions %}
+            <li class="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg border border-gray-100">
+                <div>
+                    <div class="text-sm font-medium text-gray-900">Customer: {{ p.customer_id or 'N/A' }}</div>
+                    <div class="text-sm text-gray-500">{{ p.industry or 'N/A' }} — <span class="font-semibold {{ 'text-red-600' if p.churn_risk == 'High' else 'text-yellow-600' if p.churn_risk == 'Medium' else 'text-green-600' }}">{{ p.churn_risk }}</span> ({{ p.risk_score }}%)</div>
+                </div>
+                <div>
+                    <a href="{{ url_for('view_prediction') }}?customer_id={{ (p.customer_id or p._id) }}&industry={{ p.industry }}" class="text-blue-600 hover:underline">View</a>
+                </div>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% else %}
+    <div class="bg-white shadow rounded-lg p-6 mt-8 text-center">
+        <p class="text-gray-500">No recent predictions. Use the Predict page to generate predictions.</p>
+        <a href="{{ url_for('predict') }}" class="mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+            Make a Prediction
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(() => {
+    const openBtn = document.getElementById('openMembershipForm');
+    const modal = document.getElementById('membershipModal');
+    const closeBtn = document.getElementById('closeMembershipForm');
+    const form = document.getElementById('membershipForm');
+    const msg = document.getElementById('membershipMsg');
+
+    function openModal(){ modal.classList.remove('hidden'); modal.classList.add('flex'); document.body.style.overflow='hidden'; }
+    function closeModal(){ modal.classList.remove('flex'); modal.classList.add('hidden'); document.body.style.overflow=''; }
+
+    openBtn && openBtn.addEventListener('click', openModal);
+    closeBtn && closeBtn.addEventListener('click', closeModal);
+    modal && modal.addEventListener('click', function(e){ if(e.target === modal) closeModal(); });
+
+    const planSelect = document.getElementById('membershipPlanSelect');
+    const paymentText = document.getElementById('paymentAmountText');
+    if (planSelect && paymentText) {
+        planSelect.addEventListener('change', function() {
+            if (this.value === 'gold') {
+                paymentText.innerHTML = 'Pay <strong>&#8377;500</strong> for Gold Membership';
+            } else {
+                paymentText.innerHTML = 'Pay <strong>&#8377;1000</strong> for Premium Membership';
+            }
+        });
+    }
+
+    const fileInput = document.getElementById('paymentFileInput');
+    const fileLabel = document.getElementById('fileLabel');
+    if (fileInput && fileLabel) {
+        fileInput.addEventListener('change', function() {
+            fileLabel.textContent = this.files[0] ? '✅ ' + this.files[0].name : 'Click to upload screenshot';
+        });
+    }
+
+    form && form.addEventListener('submit', async function(e){
+        e.preventDefault();
+        const btn = document.getElementById('membershipSubmitBtn');
+        if(btn){ btn.disabled = true; btn.innerHTML = '<svg class="w-4 h-4 animate-spin mr-1" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Submitting...'; }
+        msg.innerText = '';
+        const data = new FormData(form);
+        try{
+            const res = await fetch('/subscribe', { method: 'POST', body: data });
+            const j = await res.json();
+            if(j.success){ 
+                msg.innerHTML = '✅ ' + j.message;
+                msg.className = 'text-sm font-semibold text-green-600';
+                form.reset(); 
+                if(fileLabel) fileLabel.textContent = 'Click to upload screenshot';
+                if(paymentText) paymentText.innerHTML = 'Pay <strong>&#8377;500</strong> for Gold Membership';
+                setTimeout(()=>{ closeModal(); msg.innerText=''; if(btn){ btn.disabled=false; btn.innerHTML='<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Submit Request'; } }, 2500); 
+            } else { 
+                msg.innerHTML = '❌ ' + (j.message || 'Something went wrong');
+                msg.className = 'text-sm font-semibold text-red-600';
+                if(btn){ btn.disabled=false; btn.innerHTML='Submit Request'; }
+            }
+        }catch(err){ 
+            msg.innerHTML = '❌ Server error. Please try again.';
+            msg.className = 'text-sm font-semibold text-red-600';
+            if(btn){ btn.disabled=false; btn.innerHTML='Submit Request'; }
+        }
+    });
+})();
+</script>
+{% endblock %}

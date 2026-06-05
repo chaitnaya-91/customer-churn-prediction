@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+
+{% block title %}Ride Sharing Customer Prediction - Churn Prediction{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+
+    <!-- Back link + Header -->
+    <div class="mb-8">
+        <a href="{{ url_for('rideshare_upload') }}"
+           class="inline-flex items-center text-indigo-600 hover:text-indigo-800 text-sm font-medium mb-4 transition-colors duration-200">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Back to Upload
+        </a>
+        <div class="flex items-center gap-4">
+            <div class="bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-xl p-3">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Ride Sharing Customer Prediction</h1>
+                <p class="text-gray-500 mt-1">Enter individual customer details to predict churn risk instantly</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="bg-white rounded-2xl shadow-lg p-8 mb-6">
+        <form method="POST" action="{{ url_for('rideshare_customer_predict') }}" id="customerForm">
+
+            <!-- Section: Customer Profile -->
+            <h2 class="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                <span class="bg-indigo-100 text-indigo-700 rounded-lg px-2 py-1 text-xs font-bold">01</span>
+                Customer Profile
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1" for="age">
+                        Age
+                    </label>
+                    <input type="number" id="age" name="age" min="18" max="100" step="1"
+                           value="{{ form.age if form else '' }}"
+                           placeholder="e.g. 29"
+                           class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1" for="gender">
+                        Gender
+                    </label>
+                    <select id="gender" name="gender"
+                            class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition bg-white">
+                        <option value="Male" {% if form and form.gender == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if form and form.gender == 'Female' %}selected{% endif %}>Female</option>
+                        <option value="Other" {% if form and form.gender == 'Other' %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1" for="city">
+                        City
+                    </label>
+                    <select id="city" name="city"
+                            class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition bg-white">
+                        {% for c in ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Hyderabad', 'Pune', 'Kolkata', 'Ahmedabad', 'Jaipur', 'Nagpur'] %}
+                        <option value="{{ c }}" {% if form and form.city == c %}selected{% endif %}>{{ c }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1" for="tenure_months">
+                        Tenure <span class="text-gray-400 font-normal">(months)</span>
+                    </label>
+                    <input type="number" id="tenure_months" name="tenure_months" min="0" max="120" step="1"
+                           value="{{ form.tenure_months if form else '' }}"
+                           placeholder="e.g. 18"
+                           class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition" required>
+                </div>
+            </div>
+
+            <!-- Section: Ride Usage & Behavior -->
+            <h2 class="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                <span class="bg-indigo-100 text-indigo-700 rounded-lg px-2 py-1 text-xs font-bold">02</span>
+                Ride Usage & Behavior
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1" for="total_rides">
+                        Total Rides
+                    </label>
+                    <input type="number" id="total_rides" name="total_rides" min="0" max="5000" step="1"
+                           value="{{ form.total_rides if form else '' }}"
+                           placeholder="e.g. 145"
+                           class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1" for="average_ride_cost">
+                        Average Ride Cost <span class="text-gray-400 font-normal">(₹)</span>
+                    </label>
+                    <input type="number" id="average_ride_cost" name="average_ride_cost" min="0" step="0.01"
+                           value="{{ form.average_ride_cost if form else '' }}"
+                           placeholder="e.g. 240"
+                           class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1" for="days_since_last_ride">
+                        Days Since Last Ride
+                    </label>
+                    <input type="number" id="days_since_last_ride" name="days_since_last_ride" min="0" max="365" step="1"
+                           value="{{ form.days_since_last_ride if form else '' }}"
+                           placeholder="e.g. 5"
+                           class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1" for="cancellation_rate">
+                        Cancellation Rate <span class="text-gray-400 font-normal">(0.0 - 1.0)</span>
+                    </label>
+                    <input type="number" id="cancellation_rate" name="cancellation_rate" min="0" max="1" step="0.01"
+                           value="{{ form.cancellation_rate if form else '' }}"
+                           placeholder="e.g. 0.08"
+                           class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1" for="app_usage_hours_per_week">
+                        App Usage Hours <span class="text-gray-400 font-normal">(weekly)</span>
+                    </label>
+                    <input type="number" id="app_usage_hours_per_week" name="app_usage_hours_per_week" min="0" max="168" step="0.1"
+                           value="{{ form.app_usage_hours_per_week if form else '' }}"
+                           placeholder="e.g. 4.2"
+                           class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition">
+                </div>
+            </div>
+
+            <!-- Section: Service Preferences -->
+            <h2 class="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                <span class="bg-indigo-100 text-indigo-700 rounded-lg px-2 py-1 text-xs font-bold">03</span>
+                Service Preferences & Rating
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1" for="membership_type">
+                        Membership Type
+                    </label>
+                    <select id="membership_type" name="membership_type"
+                            class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition bg-white">
+                        <option value="Basic" {% if form and form.membership_type == 'Basic' %}selected{% endif %}>Basic</option>
+                        <option value="Premium" {% if form and form.membership_type == 'Premium' %}selected{% endif %}>Premium</option>
+                        <option value="VIP" {% if form and form.membership_type == 'VIP' %}selected{% endif %}>VIP</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1" for="payment_method">
+                        Payment Method
+                    </label>
+                    <select id="payment_method" name="payment_method"
+                            class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition bg-white">
+                        <option value="Credit Card" {% if form and form.payment_method == 'Credit Card' %}selected{% endif %}>Credit Card</option>
+                        <option value="Debit Card" {% if form and form.payment_method == 'Debit Card' %}selected{% endif %}>Debit Card</option>
+                        <option value="UPI" {% if form and form.payment_method == 'UPI' %}selected{% endif %}>UPI</option>
+                        <option value="Cash" {% if form and form.payment_method == 'Cash' %}selected{% endif %}>Cash</option>
+                        <option value="Wallet" {% if form and form.payment_method == 'Wallet' %}selected{% endif %}>Wallet</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1" for="customer_satisfaction_score">
+                        Satisfaction Score <span class="text-gray-400 font-normal">(1-10)</span>
+                    </label>
+                    <input type="number" id="customer_satisfaction_score" name="customer_satisfaction_score" min="1" max="10" step="1"
+                           value="{{ form.customer_satisfaction_score if form else '' }}"
+                           placeholder="e.g. 8"
+                           class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition" required>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex flex-wrap items-center gap-4 pt-2">
+                <button type="submit"
+                        class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-8 py-3 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    Predict Churn
+                </button>
+                <button type="reset"
+                        class="flex items-center gap-2 border border-gray-300 hover:border-gray-400 text-gray-600 hover:text-gray-800 font-medium px-6 py-3 rounded-xl transition-all duration-200">
+                    Clear Form
+                </button>
+                <a href="{{ url_for('rideshare_upload') }}"
+                   class="text-gray-400 hover:text-gray-600 text-sm font-medium transition-colors duration-200">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Result Card -->
+    {% if result %}
+    <div class="bg-white rounded-2xl shadow-lg p-8 border-l-4
+        {% if result.churn_risk == 'High' %}border-red-500
+        {% elif result.churn_risk == 'Medium' %}border-yellow-400
+        {% else %}border-green-500{% endif %}">
+
+        <h2 class="text-xl font-bold text-gray-900 mb-6">🎯 Prediction Result</h2>
+
+        <div class="flex flex-wrap items-center gap-6 mb-8">
+            <div class="text-center">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Churn Risk</p>
+                <span class="inline-block text-3xl font-black px-6 py-2 rounded-2xl
+                    {% if result.churn_risk == 'High' %}bg-red-100 text-red-600
+                    {% elif result.churn_risk == 'Medium' %}bg-yellow-100 text-yellow-600
+                    {% else %}bg-green-100 text-green-600{% endif %}">
+                    {{ result.churn_risk }}
+                </span>
+            </div>
+
+            <div class="flex-1 min-w-[180px]">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Risk Score</p>
+                <div class="flex items-center gap-3">
+                    <div class="flex-1 bg-gray-200 rounded-full h-4 overflow-hidden">
+                        <div class="h-4 rounded-full transition-all duration-700
+                            {% if result.churn_risk == 'High' %}bg-red-500
+                            {% elif result.churn_risk == 'Medium' %}bg-yellow-400
+                            {% else %}bg-green-500{% endif %}"
+                            style="width: {{ [result.risk_score, 100] | min }}%">
+                        </div>
+                    </div>
+                    <span class="text-2xl font-bold text-gray-800">{{ result.risk_score }}<span class="text-sm font-normal text-gray-400">%</span></span>
+                </div>
+            </div>
+        </div>
+
+        {% if result.reasons %}
+        <div>
+            <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Contributing Factors</p>
+            <ul class="space-y-2">
+                {% for reason in result.reasons %}
+                <li class="flex items-center gap-3 bg-gray-50 rounded-xl px-4 py-2.5 text-sm text-gray-700">
+                    <span class="w-2 h-2 rounded-full flex-shrink-0
+                        {% if result.churn_risk == 'High' %}bg-red-400
+                        {% elif result.churn_risk == 'Medium' %}bg-yellow-400
+                        {% else %}bg-green-400{% endif %}">
+                    </span>
+                    {{ reason }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- Model details -->
+        {% if result.best_model_name %}
+        <div class="mb-6 bg-gray-50 rounded-xl px-5 py-4 border border-gray-150">
+            <p class="text-sm text-gray-600">
+                🔮 Prediction calculated using: <strong>{{ result.best_model_name }}</strong> (Test Accuracy: <strong>{{ "%.2f"|format(result.best_accuracy) }}%</strong>)
+            </p>
+        </div>
+        {% endif %}
+
+        <div class="mt-6 rounded-xl px-5 py-4
+            {% if result.churn_risk == 'High' %}bg-red-50 border border-red-200
+            {% elif result.churn_risk == 'Medium' %}bg-yellow-50 border border-yellow-200
+            {% else %}bg-green-50 border border-green-200{% endif %}">
+            <p class="text-sm font-semibold mb-1
+                {% if result.churn_risk == 'High' %}text-red-800
+                {% elif result.churn_risk == 'Medium' %}text-yellow-800
+                {% else %}text-green-800{% endif %}">
+                💡 Recommended Action
+            </p>
+            <p class="text-sm
+                {% if result.churn_risk == 'High' %}text-red-700
+                {% elif result.churn_risk == 'Medium' %}text-yellow-700
+                {% else %}text-green-700{% endif %}">
+                {% if result.churn_risk == 'High' %}
+                    Immediate retention action required — offer ride discount coupons, priority booking, or a fee waiver for cancellation.
+                {% elif result.churn_risk == 'Medium' %}
+                    Monitor closely — send personalized notifications with nearby driver availability, loyalty benefits, or app features.
+                {% else %}
+                    Customer appears stable. Continue regular updates and maintain ride quality.
+                {% endif %}
+            </p>
+        </div>
+
+        <div class="mt-6">
+            <a href="{{ url_for('rideshare_customer_predict') }}"
+               class="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800 text-sm font-semibold transition-colors duration-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Predict Another Customer
+            </a>
+        </div>
+
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

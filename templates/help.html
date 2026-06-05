@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}Help Center - Churn Prediction{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+    <!-- Hero Section -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">Help Center</h1>
+        <p class="text-xl text-gray-600">Everything you need to know about using Churn Predictor</p>
+    </div>
+
+    <!-- Quick Links Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <a href="#getting-started" class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+            <div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Getting Started</h3>
+            <p class="text-gray-600 text-sm">Learn the basics of churn prediction</p>
+        </a>
+
+        <a href="#how-it-works" class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+            <div class="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">How It Works</h3>
+            <p class="text-gray-600 text-sm">Understand our prediction process</p>
+        </a>
+
+        <a href="#faq" class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+            <div class="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">FAQs</h3>
+            <p class="text-gray-600 text-sm">Find answers to common questions</p>
+        </a>
+    </div>
+
+    <!-- Getting Started Section -->
+    <div id="getting-started" class="bg-white rounded-xl shadow-md p-8 mb-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6">Getting Started</h2>
+        <div class="space-y-6">
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">1</div>
+                <div class="flex-1">
+                    <h3 class="font-semibold text-gray-900 mb-2">Create an Account</h3>
+                    <p class="text-gray-600">Sign up for free by clicking the "Register" button. Enter your first name, last name, email, and password. After registration, you'll be automatically logged in.</p>
+                </div>
+            </div>
+
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">2</div>
+                <div class="flex-1">
+                    <h3 class="font-semibold text-gray-900 mb-2">Choose Your Industry</h3>
+                    <p class="text-gray-600">Navigate to the "Predict" page and select your industry from the six available options: Telecom, Banking, E-commerce, Subscription Services, Fitness Gym, or Ride Sharing.</p>
+                </div>
+            </div>
+
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">3</div>
+                <div class="flex-1">
+                    <h3 class="font-semibold text-gray-900 mb-2">Enter Customer Data</h3>
+                    <p class="text-gray-600">Fill in the customer information form with relevant details like tenure, charges, contract type, and payment method. The more accurate your data, the better the prediction.</p>
+                </div>
+            </div>
+
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">4</div>
+                <div class="flex-1">
+                    <h3 class="font-semibold text-gray-900 mb-2">Get Prediction Results</h3>
+                    <p class="text-gray-600">Receive instant churn risk assessment (High, Medium, or Low) with a detailed breakdown of risk factors and actionable recommendations to prevent customer loss.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works Section -->
+    <div id="how-it-works" class="bg-white rounded-xl shadow-md p-8 mb-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6">How Our Predictions Work</h2>
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-6">
+            <p class="text-gray-700 leading-relaxed">
+                Our churn prediction system uses advanced rule-based algorithms that analyze multiple customer attributes 
+                to calculate churn risk. Each factor is weighted based on its correlation with customer attrition in 
+                real-world industry data.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="border rounded-lg p-6">
+                <h3 class="font-semibold text-gray-900 mb-3 flex items-center">
+                    <svg class="w-5 h-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                    </svg>
+                    Risk Factors Analyzed
+                </h3>
+                <ul class="space-y-2 text-gray-600 text-sm">
+                    <li class="flex items-start">
+                        <span class="mr-2">•</span>
+                        <span><strong>Customer Tenure:</strong> Length of relationship with your business</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="mr-2">•</span>
+                        <span><strong>Monthly Charges:</strong> Regular payment amount</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="mr-2">•</span>
+                        <span><strong>Total Charges:</strong> Cumulative spending over time</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="mr-2">•</span>
+                        <span><strong>Contract Type:</strong> Commitment level (month-to-month, annual, etc.)</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="mr-2">•</span>
+                        <span><strong>Payment Method:</strong> How customers pay for services</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="border rounded-lg p-6">
+                <h3 class="font-semibold text-gray-900 mb-3 flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    Understanding Results
+                </h3>
+                <ul class="space-y-2 text-gray-600 text-sm">
+                    <li class="flex items-start">
+                        <span class="mr-2">•</span>
+                        <span><strong>High Risk (>60%):</strong> Immediate action required to prevent churn</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="mr-2">•</span>
+                        <span><strong>Medium Risk (30-60%):</strong> Monitor closely and engage proactively</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="mr-2">•</span>
+                        <span><strong>Low Risk (<30%):</strong> Customer appears stable and satisfied</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="mr-2">•</span>
+                        <span><strong>Risk Score:</strong> Percentage indicating overall churn probability</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="mr-2">•</span>
+                        <span><strong>Recommendations:</strong> Specific actions to reduce churn risk</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div id="faq" class="bg-white rounded-xl shadow-md p-8 mb-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
+        <div class="space-y-6">
+            <div class="border-b pb-6">
+                <h3 class="font-semibold text-gray-900 mb-2 text-lg">How accurate are the predictions?</h3>
+                <p class="text-gray-600">Our models achieve 82-89% accuracy across different industries, trained on real-world customer data and continuously updated for better performance.</p>
+            </div>
+
+            <div class="border-b pb-6">
+                <h3 class="font-semibold text-gray-900 mb-2 text-lg">Is my customer data secure?</h3>
+                <p class="text-gray-600">Absolutely! We use bank-level encryption to protect your data. Your customer information is never shared with third parties and is used solely for generating predictions.</p>
+            </div>
+
+            <div class="border-b pb-6">
+                <h3 class="font-semibold text-gray-900 mb-2 text-lg">Can I change my subscription plan later?</h3>
+                <p class="text-gray-600">Yes! You can upgrade or downgrade your plan at any time from your account settings. Changes take effect immediately.</p>
+            </div>
+
+            <div class="border-b pb-6">
+                <h3 class="font-semibold text-gray-900 mb-2 text-lg">What if I need help with a specific prediction?</h3>
+                <p class="text-gray-600">Our support team is here to help! Contact us through the support portal or email us directly. We typically respond within 24 hours.</p>
+            </div>
+
+            <div class="border-b pb-6">
+                <h3 class="font-semibold text-gray-900 mb-2 text-lg">Do you offer bulk predictions?</h3>
+                <p class="text-gray-600">Currently, we support individual customer predictions. For enterprise bulk prediction needs, please contact our sales team for custom solutions.</p>
+            </div>
+
+            <div class="border-b pb-6">
+                <h3 class="font-semibold text-gray-900 mb-2 text-lg">Which industry model should I use?</h3>
+                <p class="text-gray-600">Choose the model that best matches your business type. Each model is trained on industry-specific data and optimized for that sector's unique churn patterns. If your business spans multiple industries, start with your primary revenue source.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Support -->
+    <div class="bg-gradient-to-r from-blue-500 to-blue-700 rounded-xl shadow-lg p-8 text-center text-white">
+        <p class="text-2xl font-bold mb-4">Our support team is here to assist you with any questions.</p>
+        <p class="text-lg mb-6 opacity-95">Please reach out to <a href="mailto:analytics@churnpredict.ai" class="underline font-semibold hover:text-blue-100">analytics@churnpredict.ai</a> for help.</p>
+        <div class="flex justify-center items-center">
+            <a href="mailto:analytics@churnpredict.ai" class="inline-flex items-center bg-white text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-md font-semibold transition duration-200">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                Email Support
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Add Customer - Churn Prediction{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Add New Customer</h1>
+        <p class="mt-2 text-gray-600">Enter customer information to add to the database</p>
+    </div>
+
+    <div class="bg-white shadow-lg rounded-lg p-8">
+        <form method="POST" action="{{ url_for('add_customer') }}">
+            <div class="space-y-4">
+                <!-- Name -->
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <input type="text" id="name" name="name" required 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                           placeholder="e.g., John Doe">
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <input type="email" id="email" name="email" required 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                           placeholder="e.g., john@example.com">
+                </div>
+
+                <!-- Tenure -->
+                <div>
+                    <label for="tenure" class="block text-sm font-medium text-gray-700 mb-1">Tenure (months)</label>
+                    <input type="number" id="tenure" name="tenure" min="0" max="100" required 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                           placeholder="e.g., 12">
+                </div>
+
+                <!-- Monthly Charges -->
+                <div>
+                    <label for="monthly_charges" class="block text-sm font-medium text-gray-700 mb-1">Monthly Charges ($)</label>
+                    <input type="number" id="monthly_charges" name="monthly_charges" min="0" step="0.01" required 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                           placeholder="e.g., 75.50">
+                </div>
+
+                <!-- Total Charges -->
+                <div>
+                    <label for="total_charges" class="block text-sm font-medium text-gray-700 mb-1">Total Charges ($)</label>
+                    <input type="number" id="total_charges" name="total_charges" min="0" step="0.01" required 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                           placeholder="e.g., 906.00">
+                </div>
+
+                <!-- Contract Type -->
+                <div>
+                    <label for="contract_type" class="block text-sm font-medium text-gray-700 mb-1">Contract Type</label>
+                    <select id="contract_type" name="contract_type" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Select contract type</option>
+                        <option value="Month-to-month">Month-to-month</option>
+                        <option value="One year">One year</option>
+                        <option value="Two year">Two year</option>
+                    </select>
+                </div>
+
+                <!-- Payment Method -->
+                <div>
+                    <label for="payment_method" class="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
+                    <select id="payment_method" name="payment_method" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Select payment method</option>
+                        <option value="Electronic check">Electronic check</option>
+                        <option value="Mailed check">Mailed check</option>
+                        <option value="Bank transfer (automatic)">Bank transfer (automatic)</option>
+                        <option value="Credit card (automatic)">Credit card (automatic)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-8 flex space-x-4">
+                <button type="submit" 
+                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition duration-200">
+                    Add Customer
+                </button>
+                <a href="{{ url_for('customers') }}" 
+                   class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-3 px-4 rounded-md text-center transition duration-200">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

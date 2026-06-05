@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}About Us - Churn Prediction{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+    <!-- Hero Section -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">About Churn Predictor</h1>
+        <p class="text-xl text-gray-600">Empowering businesses to retain customers through AI-driven insights</p>
+    </div>
+
+    <!-- Mission Statement -->
+    <div class="bg-gradient-to-r from-blue-500 to-blue-700 rounded-xl shadow-lg p-8 mb-12 text-white">
+        <div class="text-center">
+            <svg class="w-16 h-16 mx-auto mb-4 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+            <h2 class="text-2xl font-bold mb-4">Our Mission</h2>
+            <p class="text-lg leading-relaxed opacity-95">
+                To provide businesses of all sizes with accessible, accurate, and actionable customer churn prediction tools 
+                that help them make data-driven decisions and build lasting customer relationships.
+            </p>
+        </div>
+    </div>
+
+    <!-- What We Do -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div class="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow duration-300">
+            <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Advanced Analytics</h3>
+            <p class="text-gray-600">
+                Industry-specific machine learning models trained on real-world data to deliver accurate predictions.
+            </p>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow duration-300">
+            <div class="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v14a2 2 0 01-2 2H3.055A2 2 0 011 17V9a7 7 0 017-7zm14 0h1.945a2 2 0 012 2v14a2 2 0 01-2 2H19A2 2 0 0117 17V9a7 7 0 017-7z"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Multi-Industry Support</h3>
+            <p class="text-gray-600">
+                Specialized models for Telecom, Banking, E-commerce, Subscriptions, Fitness, and Ride-sharing.
+            </p>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow duration-300">
+            <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Actionable Insights</h3>
+            <p class="text-gray-600">
+                Clear risk factors and recommendations to help you take immediate action and prevent churn.
+            </p>
+        </div>
+    </div>
+
+    <!-- Our Story -->
+    <div class="bg-white rounded-xl shadow-md p-8 mb-12">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6">Our Story</h2>
+        <div class="space-y-4 text-gray-700 leading-relaxed">
+            <p>
+                Churn Predictor was born from a simple observation: acquiring new customers costs 5-25 times more than 
+                retaining existing ones. Yet, many businesses struggle to identify at-risk customers before it's too late.
+            </p>
+            <p>
+                Our team of data scientists and industry experts came together to create a solution that makes advanced 
+                churn prediction accessible to businesses of all sizes. By combining cutting-edge machine learning with 
+                deep industry knowledge, we've built a platform that delivers both accuracy and actionable insights.
+            </p>
+            <p>
+                Today, our system helps businesses across six major industries predict and prevent customer churn, 
+                saving millions in potential revenue loss and building stronger customer relationships.
+            </p>
+        </div>
+    </div>
+
+    <!-- Key Features -->
+    <div class="mb-12">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">Why Choose Us?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 bg-green-100 rounded-full p-2">
+                    <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-1">High Accuracy Models</h3>
+                    <p class="text-gray-600 text-sm">82-89% prediction accuracy across all industries</p>
+                </div>
+            </div>
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 bg-green-100 rounded-full p-2">
+                    <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-1">Easy to Use</h3>
+                    <p class="text-gray-600 text-sm">Intuitive interface, no technical expertise required</p>
+                </div>
+            </div>
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 bg-green-100 rounded-full p-2">
+                    <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-1">Real-time Predictions</h3>
+                    <p class="text-gray-600 text-sm">Get instant results with detailed risk analysis</p>
+                </div>
+            </div>
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 bg-green-100 rounded-full p-2">
+                    <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-1">Secure & Private</h3>
+                    <p class="text-gray-600 text-sm">Your data is encrypted and never shared with third parties</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Founders Section -->
+    <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-8 mt-12 mb-8">
+        <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold text-gray-900">Founders of this Prediction System</h2>
+            <p class="text-sm text-gray-500 mt-1">The creators behind the Customer Churn Prediction platform</p>
+            <div class="h-1 w-20 bg-gradient-to-r from-blue-500 to-indigo-500 mx-auto mt-3 rounded-full"></div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <!-- Founder 1 -->
+            <div class="p-6 bg-gradient-to-br from-purple-50/50 to-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-purple-100 transition-all duration-300 group text-center">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xl mx-auto mb-4 shadow-md group-hover:scale-110 transition-transform duration-300">
+                    AK
+                </div>
+                <h3 class="font-extrabold text-gray-800 text-lg group-hover:text-purple-600 transition-colors duration-200">Abhijeet Kadam</h3>
+                <p class="text-xs text-purple-600 font-bold uppercase tracking-wider mt-1.5">Founder & Developer</p>
+            </div>
+            
+            <!-- Founder 2 -->
+            <div class="p-6 bg-gradient-to-br from-blue-50/50 to-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-100 transition-all duration-300 group text-center">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xl mx-auto mb-4 shadow-md group-hover:scale-110 transition-transform duration-300">
+                    CG
+                </div>
+                <h3 class="font-extrabold text-gray-800 text-lg group-hover:text-blue-600 transition-colors duration-200">Chaitanya Gaikwad</h3>
+                <p class="text-xs text-blue-600 font-bold uppercase tracking-wider mt-1.5">Founder & Developer</p>
+            </div>
+            
+            <!-- Founder 3 -->
+            <div class="p-6 bg-gradient-to-br from-emerald-50/50 to-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-emerald-100 transition-all duration-300 group text-center">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-600 text-white font-bold flex items-center justify-center text-xl mx-auto mb-4 shadow-md group-hover:scale-110 transition-transform duration-300">
+                    SS
+                </div>
+                <h3 class="font-extrabold text-gray-800 text-lg group-hover:text-emerald-600 transition-colors duration-200">Samarth Sonawane</h3>
+                <p class="text-xs text-emerald-600 font-bold uppercase tracking-wider mt-1.5">Founder & Developer</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-lg p-8 text-center text-white">
+        <h2 class="text-3xl font-bold mb-4">Ready to Reduce Customer Churn?</h2>
+        <p class="text-xl mb-6 opacity-95">Join businesses worldwide using AI to predict and prevent customer attrition</p>
+        {% if not session.user_id %}
+        <a href="{{ url_for('register') }}" class="inline-block bg-white text-green-600 hover:bg-green-50 px-8 py-3 rounded-md font-semibold text-lg transition duration-200">Get Started Free</a>
+        {% else %}
+        <a href="{{ url_for('predict') }}" class="inline-block bg-white text-green-600 hover:bg-green-50 px-8 py-3 rounded-md font-semibold text-lg transition duration-200">Start Predicting Now</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

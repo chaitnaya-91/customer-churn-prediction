@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Churn Prediction{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center -mt-8 py-12">
+    <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                Create your account
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600">
+                Join the Customer Churn Prediction System
+            </p>
+        </div>
+        <form class="mt-8 space-y-6" method="POST" action="{{ url_for('register') }}">
+            <div class="space-y-4">
+                <div>
+                    <label for="first_name" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                    <input id="first_name" name="first_name" type="text" required 
+                           class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                           placeholder="Enter your first name">
+                </div>
+                
+                <div>
+                    <label for="last_name" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                    <input id="last_name" name="last_name" type="text" required 
+                           class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                           placeholder="Enter your last name">
+                </div>
+                
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email address</label>
+                    <input id="email" name="email" type="email" autocomplete="email" required 
+                           class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                           placeholder="Enter your email">
+                </div>
+                
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input id="password" name="password" type="password" required 
+                           class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                           placeholder="Create a password">
+                </div>
+                <div class="text-sm text-gray-600">
+                    <ul id="passwordRules" class="space-y-1 mt-2">
+                        <li data-rule="length" class="text-red-600">• At least 6 characters</li>
+                        <li data-rule="upper" class="text-red-600">• At least one uppercase letter</li>
+                        <li data-rule="digit" class="text-red-600">• At least one digit</li>
+                        <li data-rule="symbol" class="text-red-600">• At least one symbol (e.g. @#$%&*)</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                    <input id="confirm_password" name="confirm_password" type="password" required 
+                           class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                           placeholder="Confirm your password">
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" 
+                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Register
+                </button>
+            </div>
+            
+            <div class="text-center">
+                <a href="{{ url_for('login') }}" class="font-medium text-blue-600 hover:text-blue-500">
+                    Already have an account? Sign in here
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(() => {
+    const pwd = document.getElementById('password');
+    const rules = document.querySelectorAll('#passwordRules li');
+    function check(){
+        const v = pwd.value;
+        const checks = {
+            length: v.length >= 6,
+            upper: /[A-Z]/.test(v),
+            digit: /\d/.test(v),
+            symbol: /[^A-Za-z0-9]/.test(v)
+        };
+        rules.forEach(li => {
+            const key = li.getAttribute('data-rule');
+            if(checks[key]){ li.classList.remove('text-red-600'); li.classList.add('text-green-600'); }
+            else { li.classList.remove('text-green-600'); li.classList.add('text-red-600'); }
+        });
+    }
+    if(pwd){ pwd.addEventListener('input', check); }
+})();
+</script>
+{% endblock %}
