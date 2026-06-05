@@ -13,12 +13,21 @@ app = Flask(__name__)
 app.secret_key = 'your-secret-key-change-in-production'
 
 # MongoDB Connection
-client = MongoClient('mongodb://localhost:27017/')
-db = client['churn_prediction_db']
-users_collection = db['users']
-customers_collection = db['customers']
-predictions_collection = db['predictions']
+client = MongoClient(
+    "mongodb+srv://chaitanyagaikwad91_db_user:RFecn4nsgkIQjb53@churn-prediction-db.sre4wko.mongodb.net/churn_prediction_db?retryWrites=true&w=majority&appName=churn-prediction-db"
+)
 
+db = client["churn_prediction_db"]
+
+users_collection = db["users"]
+customers_collection = db["customers"]
+predictions_collection = db["predictions"]
+
+try:
+    client.admin.command("ping")
+    print("Connected to MongoDB Atlas!")
+except Exception as e:
+    print("Connection failed:", e)
 
 def get_dataset_filename(industry):
     try:
