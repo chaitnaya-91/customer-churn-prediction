@@ -8,14 +8,20 @@ from datetime import datetime
 import io
 import csv
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-change-in-production'
+app.secret_key = os.getenv('SECRET_KEY', 'your-secret-key-change-in-production')
 
 # MongoDB Connection
-client = MongoClient(
-    "mongodb+srv://chaitanyagaikwad91_db_user:RFecn4nsgkIQjb53@churn-prediction-db.sre4wko.mongodb.net/churn_prediction_db?retryWrites=true&w=majority&appName=churn-prediction-db"
-)
+mongodb_uri = os.getenv('MONGODB_URI')
+if not mongodb_uri:
+    raise ValueError("MONGODB_URI environment variable is missing or empty in .env")
+
+client = MongoClient(mongodb_uri)
 
 db = client["churn_prediction_db"]
 

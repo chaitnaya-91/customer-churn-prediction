@@ -1,0 +1,9 @@
+.env
+__pycache__/
+*.pyc
+instance/
+.pytest_cache/
+*.pkl
+*.csv
+venv/
+.venv/
