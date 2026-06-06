@@ -103,7 +103,7 @@ def train_rideshare_models(csv_file_stream, tune_xgboost=False):
 
     if tune_xgboost:
         xgb_params = {
-            'n_estimators': [100, 200, 300],
+            'n_estimators': [50, 100],
             'learning_rate': [0.01, 0.05, 0.1],
             'max_depth': [3, 5, 7],
             'subsample': [0.7, 0.8, 1.0],
@@ -112,7 +112,7 @@ def train_rideshare_models(csv_file_stream, tune_xgboost=False):
         xgb = XGBClassifier(random_state=42, use_label_encoder=False, eval_metric='logloss')
         random_search = RandomizedSearchCV(
             estimator=xgb, param_distributions=xgb_params,
-            n_iter=10, cv=3, scoring='accuracy', random_state=42, n_jobs=-1
+            n_iter=10, cv=3, scoring='accuracy', random_state=42, n_jobs=1
         )
         random_search.fit(X_train_scaled, y_train)
         best_xgb = random_search.best_estimator_
@@ -128,14 +128,14 @@ def train_rideshare_models(csv_file_stream, tune_xgboost=False):
         svm_score = model_svm.score(X_test_scaled, y_test)
 
         model_rf = RandomForestClassifier(
-            n_estimators=200, max_depth=10, min_samples_split=10,
+            n_estimators=50, max_depth=10, min_samples_split=10,
             min_samples_leaf=5, max_features='sqrt', random_state=42
         )
         model_rf.fit(X_train_scaled, y_train)
         rf_score = model_rf.score(X_test_scaled, y_test)
 
         model_xgb = XGBClassifier(
-            n_estimators=300, learning_rate=0.05, max_depth=5, subsample=0.8,
+            n_estimators=100, learning_rate=0.05, max_depth=5, subsample=0.8,
             colsample_bytree=0.8, random_state=42, use_label_encoder=False, eval_metric='logloss'
         )
         model_xgb.fit(X_train_scaled, y_train)
