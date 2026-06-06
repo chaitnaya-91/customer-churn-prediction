@@ -9,6 +9,7 @@ import io
 import csv
 import os
 from dotenv import load_dotenv
+import certifi
 
 # Load environment variables from .env file
 load_dotenv()
@@ -21,7 +22,7 @@ mongodb_uri = os.getenv('MONGODB_URI')
 if not mongodb_uri:
     raise ValueError("MONGODB_URI environment variable is missing or empty in .env")
 
-client = MongoClient(mongodb_uri)
+client = MongoClient(mongodb_uri, tlsCAFile=certifi.where())
 
 db = client["churn_prediction_db"]
 
