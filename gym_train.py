@@ -32,6 +32,8 @@ def train_gym_models(csv_file_stream, tune_xgboost=False):
     Target: churn_status (0/1)
     """
     ds = pd.read_csv(csv_file_stream)
+    if len(ds) > 1500:
+        ds = ds.sample(n=1500, random_state=42)
     ds.columns = ds.columns.str.lower().str.strip()
 
     # Handle binary categoricals first to avoid NaNs

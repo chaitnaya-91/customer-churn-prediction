@@ -26,6 +26,8 @@ def train_telecom_models(csv_file_stream, tune_xgboost=False):
     """
     # 1. Load data
     ds = pd.read_csv(csv_file_stream)
+    if len(ds) > 1500:
+        ds = ds.sample(n=1500, random_state=42)
     ds.columns = ds.columns.str.lower()
 
     # 2. Handling Missing Values
